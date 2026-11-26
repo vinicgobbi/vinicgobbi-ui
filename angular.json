@@ -23,6 +23,11 @@
                 "glob": "LICENSE",
                 "input": ".",
                 "output": "."
+              },
+              {
+                "glob": "*.css",
+                "input": "projects/ui/styles",
+                "output": "styles"
               }
             ],
             "allowedNonPeerDependencies": [

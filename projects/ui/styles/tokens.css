@@ -1,0 +1,113 @@
+/*
+ * Tokens de @vinicgobbi/ui: cores, tipografia, raios e medidas compartilhados pelo
+ * portfólio, pela página de links e pelo blog.
+ *
+ * O tema vem de <html data-theme="light|dark">, aplicado antes do Angular carregar pelo
+ * script anti-flash (ver theme/). As datas comemorativas trocam só o acento:
+ * <html data-halloween> em 31/10 e <html data-natal> em dezembro (ver seasonal/).
+ */
+
+:root {
+  /* ---------- Tipografia ---------- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Manrope', var(--font-sans);
+  --font-mono: ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+
+  /* ---------- Formas e medidas ---------- */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --container: 1120px;
+  /* Largura de leitura de textos longos (posts, páginas). */
+  --reading: 46rem;
+  /* Altura da barra fixa no topo; compensa o scroll até âncoras. Use 0px sem barra fixa. */
+  --nav-height: 68px;
+
+  /* ---------- Cores: tema claro ---------- */
+  color-scheme: light;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+  --border: rgba(15, 23, 42, 0.1);
+  --accent: #0f766e;
+  --accent-hover: #115e59;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(13, 148, 136, 0.1);
+  --accent-text: #0f766e;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.06), 0 16px 40px rgba(15, 23, 42, 0.1);
+  --nav-bg: rgba(248, 250, 252, 0.8);
+
+  /* Feedback: erro, atenção e informação. */
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.08);
+  --warning: #b45309;
+  --warning-soft: rgba(234, 179, 8, 0.15);
+  --warning-text: #a16207;
+  --info: #2563eb;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --surface: #121821;
+  --surface-2: #1a212b;
+  --text: #e2e8f0;
+  --text-muted: #a3b0c2;
+  --text-subtle: #8090a6;
+  --border: rgba(255, 255, 255, 0.09);
+  --accent: #14b8a6;
+  --accent-hover: #2dd4bf;
+  --accent-contrast: #04201d;
+  --accent-soft: rgba(20, 184, 166, 0.14);
+  --accent-text: #5eead4;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --nav-bg: rgba(11, 15, 20, 0.75);
+
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgba(234, 179, 8, 0.15);
+  --warning-text: #facc15;
+  --info: #60a5fa;
+}
+
+/* ---------- Halloween (31/10): acento laranja de abóbora ---------- */
+:root[data-halloween] {
+  --accent: #c2410c;
+  --accent-hover: #9a3412;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(234, 88, 12, 0.12);
+  --accent-text: #c2410c;
+}
+
+:root[data-halloween][data-theme='dark'] {
+  --accent: #f97316;
+  --accent-hover: #fb923c;
+  --accent-contrast: #1c0a00;
+  --accent-soft: rgba(249, 115, 22, 0.16);
+  --accent-text: #fdba74;
+}
+
+/* ---------- Natal (dezembro): acento vermelho e cor da neve ---------- */
+:root[data-natal] {
+  --accent: #b91c1c;
+  --accent-hover: #991b1b;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(220, 38, 38, 0.1);
+  --accent-text: #b91c1c;
+  --snow: #b6cde4;
+}
+
+:root[data-natal][data-theme='dark'] {
+  --accent: #ef4444;
+  --accent-hover: #f87171;
+  --accent-contrast: #1f0303;
+  --accent-soft: rgba(239, 68, 68, 0.15);
+  --accent-text: #f87171;
+  --snow: #f1f5f9;
+}

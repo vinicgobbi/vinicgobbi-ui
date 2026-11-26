@@ -1,0 +1,11 @@
+/*
+ * @vinicgobbi/ui completo: tokens, fontes, base, layout e componentes.
+ *
+ * No app: em angular.json > styles, "@vinicgobbi/ui/styles/index.css"; ou, em SCSS,
+ * @use '@vinicgobbi/ui/styles/index.css'. Cada parte também pode ser importada sozinha.
+ */
+@import './tokens.css';
+@import './fonts.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';
