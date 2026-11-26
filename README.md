@@ -1,59 +1,51 @@
-# VinicgobbiUi
+# vinicgobbi-ui
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.3.0.
+Tema e componentes compartilhados dos meus sites: [portfólio](https://github.com/vinicgobbi/website), [links](https://github.com/vinicgobbi/links) e [blog](https://github.com/vinicgobbi/blog-front). Publicado no GitHub Packages como `@vinicgobbi/ui`.
 
-## Development server
+## Estrutura
 
-To start a local development server, run:
-
-```bash
-ng serve
+```
+projects/ui/         # a biblioteca publicada (@vinicgobbi/ui)
+projects/showcase/   # vitrine para ver tokens e componentes nos dois temas
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Cada área da biblioteca é um entry point secundário, declarado em `projects/ui/package.json > exports`, para os apps importarem só o que usam.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Desenvolvimento
 
 ```bash
-ng generate component component-name
+pnpm install
+pnpm build:lib        # compila a biblioteca em dist/vinicgobbi/ui
+pnpm start            # showcase em http://localhost:4200 (usa a biblioteca compilada)
+pnpm watch:lib        # recompila a biblioteca a cada alteração, junto com o start
+pnpm test             # testes da biblioteca e do showcase (Vitest)
+pnpm lint             # ESLint (angular-eslint)
+pnpm format:check     # Prettier
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Testando num app antes de publicar
 
 ```bash
-ng generate --help
+pnpm build:lib
+cd ../blog_novo && pnpm link ../vinicgobbi-ui/dist/vinicgobbi/ui
 ```
 
-## Building
+## Instalando num app
 
-To build the project run:
+O GitHub Packages exige autenticação até para instalar pacotes públicos. No app, um `.npmrc` aponta o escopo para o registry do GitHub:
 
-```bash
-ng build
+```ini
+@vinicgobbi:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- **Localmente:** exporte `NODE_AUTH_TOKEN` com um token do GitHub com o escopo `read:packages`.
+- **No GitHub Actions:** dê `packages: read` ao job e passe `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` no `pnpm install`. Em `@vinicgobbi/ui > Package settings > Manage Actions access`, libere o repositório do app.
 
-## Running unit tests
+## Versões e publicação
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/v1.0.0/). A cada push na `main`, o workflow [`release.yml`](.github/workflows/release.yml) roda o `cz bump` (versão, CHANGELOG e tag), cria a release no GitHub e publica no GitHub Packages com o `GITHUB_TOKEN` do workflow. Enquanto estiver em `0.x`, mudanças incompatíveis sobem o minor.
 
-```bash
-ng test
-```
+## Licença
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+[MIT](LICENSE).
