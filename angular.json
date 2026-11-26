@@ -33,6 +33,13 @@
           "options": {
             "tsConfig": "projects/ui/tsconfig.spec.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/ui/**/*.ts", "projects/ui/**/*.html"],
+            "eslintConfig": "projects/ui/eslint.config.js"
+          }
         }
       }
     },
@@ -101,6 +108,13 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/showcase/tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/showcase/**/*.ts", "projects/showcase/**/*.html"],
+            "eslintConfig": "projects/showcase/eslint.config.js"
           }
         }
       }
