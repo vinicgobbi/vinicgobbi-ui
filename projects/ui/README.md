@@ -1,6 +1,12 @@
 # @vinicgobbi/ui
 
-Tema e componentes compartilhados dos sites de Vinícius Gobbi (portfólio, links e blog), para Angular 22.
+Identidade visual de Vinícius Gobbi: tokens de cor e tipografia, CSS base e componentes Angular.
+
+O CSS não depende de framework. Os componentes e serviços em Angular (22+) são opcionais.
+
+```scss
+@import '@vinicgobbi/ui/styles/index.css';
+```
 
 Em desenvolvimento: a API ainda pode mudar entre versões `0.x`.
 
