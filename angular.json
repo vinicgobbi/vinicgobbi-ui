@@ -17,7 +17,14 @@
           "builder": "@angular/build:library",
           "options": {
             "tsConfig": "projects/ui/tsconfig.lib.json",
-            "outputPath": "dist/vinicgobbi/ui"
+            "outputPath": "dist/vinicgobbi/ui",
+            "assets": [
+              {
+                "glob": "LICENSE",
+                "input": ".",
+                "output": "."
+              }
+            ]
           },
           "configurations": {
             "production": {},
