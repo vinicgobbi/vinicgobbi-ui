@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * O showcase consome a biblioteca compilada (dist/), como um app consumiria o pacote.
+ *
+ * @import (e não @use): com a extensão .css, o Sass mantém o @import como CSS puro e quem
+ * o resolve é o bundler, a partir do arquivo real do pacote. Com @use, o Sass copiaria o
+ * conteúdo para cá e os @import internos (tokens.css, @fontsource...) deixariam de resolver.
+ */
+@import '../../../dist/vinicgobbi/ui/styles/index.css';
+
+/* Showcase com o brilho do acento no topo, como links e blog. */
+:root {
+  --page-glow: var(--glow-accent);
+}

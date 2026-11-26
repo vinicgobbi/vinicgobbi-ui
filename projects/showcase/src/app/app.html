@@ -1,5 +1,144 @@
-<main>
-  <h1>&#64;vinicgobbi/ui</h1>
-  <p>Versão {{ version }}</p>
-  <router-outlet />
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="showcase-header">
+  <div class="container showcase-header__inner">
+    <div>
+      <span class="eyebrow">Versão {{ version }}</span>
+      <h1 class="section-title">&#64;vinicgobbi/ui</h1>
+    </div>
+
+    <div class="showcase-controls">
+      <div class="segmented" role="group" aria-label="Tema">
+        @for (option of themes; track option.value) {
+          <button
+            type="button"
+            [attr.aria-pressed]="theme() === option.value"
+            (click)="setTheme(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+      <div class="segmented" role="group" aria-label="Data comemorativa">
+        @for (option of festas; track option.value) {
+          <button
+            type="button"
+            [attr.aria-pressed]="festa() === option.value"
+            (click)="setFesta(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="section" aria-labelledby="cores">
+    <div class="container">
+      <div class="section-header">
+        <span class="eyebrow">Tokens</span>
+        <h2 class="section-title" id="cores">Cores</h2>
+        <p class="section-subtitle">Mudam com o tema e, no acento, com a data comemorativa.</p>
+      </div>
+      <ul class="swatches">
+        @for (swatch of colorTokens; track swatch.token) {
+          <li class="card swatch">
+            <span class="swatch__color" [style.background]="'var(' + swatch.token + ')'"></span>
+            <code>{{ swatch.token }}</code>
+            <span class="swatch__description">{{ swatch.description }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--alt" aria-labelledby="tipografia">
+    <div class="container">
+      <div class="section-header">
+        <span class="eyebrow">Tokens</span>
+        <h2 class="section-title" id="tipografia">Tipografia</h2>
+        <p class="section-subtitle">Manrope nos títulos, Inter no texto e mono para código.</p>
+      </div>
+      <div class="stack">
+        <h1>Título 1 em Manrope</h1>
+        <h2>Título 2 em Manrope</h2>
+        <h3>Título 3 em Manrope</h3>
+        <p>
+          Texto corrido em Inter, com um <a href="#tipografia">link de acento</a> e
+          <code class="mono">código em fonte mono</code>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="componentes">
+    <div class="container stack">
+      <div class="section-header">
+        <span class="eyebrow">CSS</span>
+        <h2 class="section-title" id="componentes">Componentes</h2>
+      </div>
+
+      <h3>Botões</h3>
+      <div class="row">
+        <button type="button" class="btn btn-primary">Primário</button>
+        <button type="button" class="btn btn-outline">Contorno</button>
+        <button type="button" class="btn btn-ghost">Discreto</button>
+        <button type="button" class="btn btn-primary" disabled>Desabilitado</button>
+        <button type="button" class="btn btn-primary btn-sm">Pequeno</button>
+        <button type="button" class="btn btn-outline btn-icon" aria-label="Ícone">
+          <i class="bi bi-star" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <h3>Chips e badges</h3>
+      <ul class="chips">
+        <li><span class="chip">Chip</span></li>
+        <li><a class="chip" href="#componentes">Chip com link</a></li>
+        <li><span class="chip chip--neutral">Neutro</span></li>
+      </ul>
+      <div class="row">
+        <span class="badge badge--accent">Acento</span>
+        <span class="badge badge--warning">Atenção</span>
+        <span class="badge badge--neutral">Neutro</span>
+        <span class="badge badge--danger">Erro</span>
+      </div>
+
+      <h3>Formulário</h3>
+      <form class="card form" (submit)="$event.preventDefault()">
+        <div class="field">
+          <label for="nome">Nome</label>
+          <input id="nome" type="text" placeholder="Seu nome" />
+        </div>
+        <div class="field">
+          <label for="email">E-mail <span class="field__optional">(opcional)</span></label>
+          <input
+            id="email"
+            type="email"
+            value="invalido"
+            aria-invalid="true"
+            aria-describedby="email-erro"
+          />
+          <div class="field__errors" id="email-erro"><p>Informe um e-mail válido.</p></div>
+        </div>
+        <div class="field">
+          <label for="mensagem">Mensagem</label>
+          <textarea id="mensagem" rows="3"></textarea>
+          <span class="field__help">Aceita Markdown.</span>
+        </div>
+      </form>
+
+      <h3>Avisos e estados</h3>
+      <div class="alert">Aviso neutro.</div>
+      <div class="alert alert--error" role="alert">Não foi possível salvar.</div>
+      <div class="card state">
+        <i class="bi bi-inbox" aria-hidden="true"></i>
+        <p>Nada por aqui ainda.</p>
+      </div>
+      <a class="back" href="#conteudo"
+        ><i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar</a
+      >
+    </div>
+  </section>
 </main>
