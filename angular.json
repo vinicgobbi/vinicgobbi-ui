@@ -24,6 +24,11 @@
                 "input": ".",
                 "output": "."
               }
+            ],
+            "allowedNonPeerDependencies": [
+              "@fontsource/inter",
+              "@fontsource/manrope",
+              "bootstrap-icons"
             ]
           },
           "configurations": {
