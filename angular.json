@@ -2,36 +2,64 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "pnpm"
+    "packageManager": "pnpm",
+    "analytics": "02a4b457-6813-42c8-ad9d-b1c3ddb120d8"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "vinicgobbi-ui": {
+    "@vinicgobbi/ui": {
+      "projectType": "library",
+      "root": "projects/ui",
+      "sourceRoot": "projects/ui",
+      "prefix": "vg",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:library",
+          "options": {
+            "tsConfig": "projects/ui/tsconfig.lib.json",
+            "outputPath": "dist/vinicgobbi/ui"
+          },
+          "configurations": {
+            "production": {},
+            "development": {
+              "compilationMode": "full",
+              "declarationMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/ui/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "showcase": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/showcase",
+      "sourceRoot": "projects/showcase/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "browser": "projects/showcase/src/main.ts",
+            "tsConfig": "projects/showcase/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "projects/showcase/public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "styles": ["projects/showcase/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -61,16 +89,19 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "vinicgobbi-ui:build:production"
+              "buildTarget": "showcase:build:production"
             },
             "development": {
-              "buildTarget": "vinicgobbi-ui:build:development"
+              "buildTarget": "showcase:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/showcase/tsconfig.spec.json"
+          }
         }
       }
     }

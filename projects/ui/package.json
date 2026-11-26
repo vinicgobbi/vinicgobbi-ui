@@ -1,0 +1,26 @@
+{
+  "name": "@vinicgobbi/ui",
+  "version": "0.0.0",
+  "description": "Tema e componentes compartilhados dos sites de Vinícius Gobbi (portfólio, links e blog).",
+  "keywords": [
+    "angular",
+    "design-system",
+    "theme"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinicgobbi/vinicgobbi-ui.git",
+    "directory": "projects/ui"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "peerDependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/core": "^22.2.0"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/public-api.ts"
+  }
+}

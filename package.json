@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "ng serve showcase",
+    "build": "pnpm run build:lib && ng build showcase",
+    "build:lib": "ng build @vinicgobbi/ui",
+    "watch:lib": "ng build @vinicgobbi/ui --watch --configuration development",
+    "test": "pnpm run build:lib && ng test @vinicgobbi/ui && ng test showcase",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "private": true,
   "packageManager": "pnpm@12.21.0",
