@@ -116,18 +116,19 @@ describe('App', () => {
     );
   });
 
-  it('troca o tema pelo botão do menu lateral', async () => {
+  it('troca o tema pelo botão de ícone do menu lateral', async () => {
     const { fixture, element } = await render();
-    const toggle = [...element.querySelectorAll<HTMLButtonElement>('.sidebar__footer button')].find(
-      (item) => item.textContent?.includes('Ativar tema claro'),
-    );
+    const toggle = element.querySelector<HTMLButtonElement>(
+      '.sidebar__actions .sidebar-action:not(.sidebar__collapse)',
+    )!;
+    expect(toggle.getAttribute('aria-label')).toBe('Ativar tema claro');
 
-    toggle?.click();
+    toggle.click();
     await fixture.whenStable();
 
     expect(root.getAttribute('data-theme')).toBe('light');
     expect(localStorage.getItem('theme')).toBe('light');
-    expect(toggle?.textContent).toContain('Ativar tema escuro');
+    expect(toggle.getAttribute('aria-label')).toBe('Ativar tema escuro');
   });
 
   it('o index.html traz o script anti-flash desta versão da biblioteca', () => {
