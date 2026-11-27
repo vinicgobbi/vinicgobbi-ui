@@ -1,11 +1,12 @@
-import { Component, DOCUMENT, computed, inject, signal } from '@angular/core';
+import { Component, Injectable, computed, inject, signal } from '@angular/core';
 import { UI_VERSION } from '@vinicgobbi/ui';
 import { RevealOnScroll } from '@vinicgobbi/ui/a11y';
+import { SEASONAL_DATE, Seasonal, easterSunday } from '@vinicgobbi/ui/seasonal';
 import { Sidebar, SidebarState, provideSidebar } from '@vinicgobbi/ui/sidebar';
 import { type Theme, ThemeService } from '@vinicgobbi/ui/theme';
 import { Tooltip } from '@vinicgobbi/ui/tooltip';
 
-type Festa = 'nenhuma' | 'halloween' | 'natal';
+type Festa = 'nenhuma' | 'ano-novo' | 'carnaval' | 'pascoa' | 'aniversario' | 'halloween' | 'natal';
 
 interface Swatch {
   token: string;
@@ -34,6 +35,26 @@ export const COLOR_TOKENS: readonly Swatch[] = [
   { token: '--info', description: 'Informação' },
 ];
 
+const YEAR = new Date().getFullYear();
+const EASTER = easterSunday(YEAR);
+
+/** Um dia representativo de cada ocasião, no ano atual; "nenhuma" é um dia comum. */
+export const FESTA_DATES: Record<Festa, Date> = {
+  nenhuma: new Date(YEAR, 5, 15),
+  'ano-novo': new Date(YEAR, 11, 31),
+  carnaval: new Date(YEAR, EASTER.getMonth(), EASTER.getDate() - 48),
+  pascoa: EASTER,
+  aniversario: new Date(YEAR, 9, 1),
+  halloween: new Date(YEAR, 9, 31),
+  natal: new Date(YEAR, 11, 10),
+};
+
+/** Data que as decorações enxergam na vitrine: a da ocasião escolhida. */
+@Injectable()
+export class SeasonalPreview {
+  readonly date = signal(FESTA_DATES.nenhuma);
+}
+
 /** Seções da vitrine, também usadas como itens do menu lateral. */
 export const SECTIONS = [
   { id: 'cores', label: 'Cores', icon: 'bi-palette' },
@@ -42,21 +63,30 @@ export const SECTIONS = [
 ] as const;
 
 /**
- * Vitrine do @vinicgobbi/ui, montada com a própria biblioteca: menu lateral, tema, dicas e
- * revelar ao rolar. A data comemorativa é trocada direto nos atributos do <html>, para ver
- * o acento de Halloween e Natal fora das datas.
+ * Vitrine do @vinicgobbi/ui, montada com a própria biblioteca: menu lateral, tema, dicas,
+ * revelar ao rolar e as datas comemorativas, vistas fora da data com provideSeasonalDate.
  */
 @Component({
   selector: 'app-root',
-  imports: [RevealOnScroll, Sidebar, Tooltip],
+  imports: [RevealOnScroll, Seasonal, Sidebar, Tooltip],
   styleUrl: './app.scss',
   templateUrl: './app.html',
-  providers: [provideSidebar('showcase')],
+  providers: [
+    provideSidebar('showcase'),
+    SeasonalPreview,
+    {
+      provide: SEASONAL_DATE,
+      useFactory: () => {
+        const preview = inject(SeasonalPreview);
+        return () => preview.date();
+      },
+    },
+  ],
   host: { class: 'layout--sidebar' },
 })
 export class App {
-  private readonly root = inject(DOCUMENT).documentElement;
   protected readonly theme = inject(ThemeService);
+  private readonly preview = inject(SeasonalPreview);
   protected readonly sidebar = inject(SidebarState);
   protected readonly sections = SECTIONS;
 
@@ -68,6 +98,10 @@ export class App {
   ];
   protected readonly festas: readonly { value: Festa; label: string }[] = [
     { value: 'nenhuma', label: 'Nenhuma' },
+    { value: 'ano-novo', label: 'Ano Novo' },
+    { value: 'carnaval', label: 'Carnaval' },
+    { value: 'pascoa', label: 'Páscoa' },
+    { value: 'aniversario', label: 'Aniversário' },
     { value: 'halloween', label: 'Halloween' },
     { value: 'natal', label: 'Natal' },
   ];
@@ -81,9 +115,9 @@ export class App {
     this.theme.set(theme);
   }
 
+  /** A decoração lê a data ao aparecer; o @for do template a recria a cada troca. */
   protected setFesta(festa: Festa): void {
+    this.preview.date.set(FESTA_DATES[festa]);
     this.festa.set(festa);
-    this.root.toggleAttribute('data-halloween', festa === 'halloween');
-    this.root.toggleAttribute('data-natal', festa === 'natal');
   }
 }

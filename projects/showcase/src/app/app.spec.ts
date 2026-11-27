@@ -4,7 +4,8 @@ import { UI_VERSION } from '@vinicgobbi/ui';
 import { stubWideScreen } from '../testing/wide-screen';
 import { hasThemeInitScript } from '@vinicgobbi/ui/theme';
 import indexHtml from '../index.html' with { loader: 'text' };
-import { App, COLOR_TOKENS, SECTIONS } from './app';
+import { seasonalOccasion } from '@vinicgobbi/ui/seasonal';
+import { App, COLOR_TOKENS, FESTA_DATES, SECTIONS } from './app';
 
 describe('App', () => {
   let root: HTMLElement;
@@ -22,8 +23,16 @@ describe('App', () => {
     localStorage.clear();
     root.removeAttribute('data-sidebar-showcase');
     root.removeAttribute('data-theme');
-    root.removeAttribute('data-halloween');
-    root.removeAttribute('data-natal');
+    for (const attribute of [
+      'data-ano-novo',
+      'data-carnaval',
+      'data-pascoa',
+      'data-aniversario',
+      'data-halloween',
+      'data-natal',
+    ]) {
+      root.removeAttribute(attribute);
+    }
   });
 
   async function render(): Promise<{ fixture: ComponentFixture<App>; element: HTMLElement }> {
@@ -65,18 +74,35 @@ describe('App', () => {
     expect(claro.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('liga uma data comemorativa por vez', async () => {
-    const { element } = await render();
+  it('mostra a decoração da data comemorativa escolhida, uma por vez', async () => {
+    const { fixture, element } = await render();
+    const greeting = () => element.querySelector('vg-seasonal .greeting')?.textContent ?? '';
 
-    button(element, 'Data comemorativa', 'Halloween').click();
-    expect(root.hasAttribute('data-halloween')).toBe(true);
+    expect(greeting()).toBe('');
 
-    button(element, 'Data comemorativa', 'Natal').click();
-    expect(root.hasAttribute('data-halloween')).toBe(false);
-    expect(root.hasAttribute('data-natal')).toBe(true);
+    button(element, 'Data comemorativa', 'Carnaval').click();
+    await fixture.whenStable();
+    expect(greeting()).toContain('Bom Carnaval!');
+    expect(element.querySelectorAll('vg-seasonal .confetto').length).toBeGreaterThan(0);
+    expect(root.hasAttribute('data-carnaval')).toBe(true);
+
+    button(element, 'Data comemorativa', 'Aniversário').click();
+    await fixture.whenStable();
+    expect(greeting()).toContain('Hoje é meu aniversário!');
+    expect(root.hasAttribute('data-carnaval')).toBe(false);
+    expect(root.hasAttribute('data-aniversario')).toBe(true);
 
     button(element, 'Data comemorativa', 'Nenhuma').click();
-    expect(root.hasAttribute('data-natal')).toBe(false);
+    await fixture.whenStable();
+    expect(greeting()).toBe('');
+    expect(root.hasAttribute('data-aniversario')).toBe(false);
+  });
+
+  it('o dia de cada ocasião cai mesmo na ocasião', () => {
+    expect(seasonalOccasion(FESTA_DATES.nenhuma)).toBeNull();
+    for (const festa of Object.keys(FESTA_DATES).filter((key) => key !== 'nenhuma')) {
+      expect(seasonalOccasion(FESTA_DATES[festa as keyof typeof FESTA_DATES])).toBe(festa);
+    }
   });
 
   it('tem um item no menu lateral para cada seção', async () => {

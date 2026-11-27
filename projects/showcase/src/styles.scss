@@ -12,3 +12,20 @@
 :root {
   --page-glow: var(--glow-accent);
 }
+
+/* Datas comemorativas: começam depois do menu lateral, como no blog. */
+@media (min-width: 960px) {
+  :root {
+    --seasonal-start: var(--sidebar-width);
+  }
+
+  :root:has(.sidebar[data-collapsed]) {
+    --seasonal-start: var(--sidebar-collapsed-width);
+  }
+}
+
+@media (max-width: 1599px) {
+  :root {
+    --seasonal-hanging-display: none;
+  }
+}
