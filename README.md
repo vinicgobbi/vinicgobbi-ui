@@ -34,7 +34,7 @@ cd ../blog_novo && pnpm link ../vinicgobbi-ui/dist/vinicgobbi/ui
 
 ## Usando os estilos
 
-`@vinicgobbi/ui/styles/index.css` traz tudo: tokens, fontes (Inter e Manrope, self-hosted), Bootstrap Icons, base, layout e componentes. Cada parte também existe sozinha (`tokens.css`, `fonts.css`, `base.css`, `layout.css`, `components.css`).
+`@vinicgobbi/ui/styles/index.css` traz tokens, fontes (Inter e Manrope, self-hosted), Bootstrap Icons, base, layout e componentes. Cada parte também existe sozinha (`tokens.css`, `fonts.css`, `base.css`, `layout.css`, `components.css`). O menu lateral é opcional: `sidebar.css`, importado depois do `index.css`.
 
 Em Angular, por `angular.json`:
 
@@ -57,6 +57,75 @@ O tema vem de `<html data-theme="light|dark">`, e as datas comemorativas, de `da
   --page-glow: var(--glow-accent);
 }
 ```
+
+## Usando em Angular
+
+Cada área é um entry point, importado só por quem usa:
+
+| Entry point               | O que tem                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `@vinicgobbi/ui/theme`    | `ThemeService` (claro/escuro), `THEME_INIT_SCRIPT`                              |
+| `@vinicgobbi/ui/sidebar`  | `<vg-sidebar>`, `provideSidebar(nome)`, `SIDEBAR_INIT_SCRIPT`                   |
+| `@vinicgobbi/ui/tooltip`  | diretiva `vgTooltip`                                                            |
+| `@vinicgobbi/ui/seasonal` | `<vg-natal>` (dezembro), `<vg-halloween>` (31/10)                               |
+| `@vinicgobbi/ui/consent`  | `<vg-cookie-banner>`, `AnalyticsService`, `provideAnalytics({ measurementId })` |
+| `@vinicgobbi/ui/a11y`     | `<vg-vlibras>`, diretiva `vgRevealOnScroll`                                     |
+
+Tudo funciona com zone.js ou zoneless, e com SSR ou prerender: o que depende do navegador só roda depois da primeira renderização.
+
+### Scripts anti-flash
+
+Tema e menu recolhido precisam estar certos antes da primeira pintura, então cada um tem um script que vai **inline no `<head>`**. No `angular.json > scripts` ele entraria no fim do `<body>`, tarde demais. Cole o conteúdo de `THEME_INIT_SCRIPT` num `<script>`. Com SSR ou prerender e `<vg-sidebar>`, cole também o de `SIDEBAR_INIT_SCRIPT`. Um teste no app garante que a cópia acompanha a biblioteca:
+
+```ts
+import { hasThemeInitScript } from '@vinicgobbi/ui/theme';
+import indexHtml from '../index.html' with { loader: 'text' };
+
+it('o index.html traz o script anti-flash do tema', () => {
+  expect(hasThemeInitScript(indexHtml)).toBe(true);
+});
+```
+
+### Menu lateral
+
+```ts
+@Component({
+  imports: [Sidebar, Tooltip],
+  providers: [provideSidebar('admin')],
+  host: { class: 'layout--sidebar' },
+  template: `
+    <vg-sidebar>
+      <a sidebarBrand class="brand" href="/">
+        <span class="brand__mark" aria-hidden="true">VG</span>
+        <span class="brand__name">Admin</span>
+      </a>
+      <nav aria-label="Principal">
+        <ul class="sidebar-links">
+          <li>
+            <a
+              class="sidebar-link"
+              routerLink="/posts"
+              routerLinkActive="active"
+              vgTooltip="Posts"
+              [vgTooltipDisabled]="!sidebar.showTooltips()"
+            >
+              <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+              <span class="sidebar-link__label">Posts</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <ng-container sidebarFooter><!-- tema, sair... --></ng-container>
+    </vg-sidebar>
+    <div class="layout__content"><main id="conteudo">...</main></div>
+  `,
+})
+export class AdminLayout {
+  protected readonly sidebar = inject(SidebarState);
+}
+```
+
+Cada nome guarda o próprio estado recolhido (`localStorage`: `sidebar.<nome>`).
 
 ## Instalando num app
 
