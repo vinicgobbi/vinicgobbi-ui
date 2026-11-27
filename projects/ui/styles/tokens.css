@@ -3,8 +3,9 @@
  * portfólio, pela página de links e pelo blog.
  *
  * O tema vem de <html data-theme="light|dark">, aplicado antes do Angular carregar pelo
- * script anti-flash (ver theme/). As datas comemorativas trocam só o acento:
- * <html data-halloween> em 31/10 e <html data-natal> em dezembro (ver seasonal/).
+ * script anti-flash (ver theme/). As datas comemorativas trocam só o acento, por um atributo
+ * do <html>: data-ano-novo, data-carnaval, data-pascoa, data-halloween e data-natal (ver
+ * seasonal/calendar.ts). No aniversário (data-aniversario), o acento é o normal.
  */
 
 :root {
@@ -79,6 +80,57 @@
   --info: #60a5fa;
 }
 
+/* ---------- Ano Novo (26/12 a 01/01): acento dourado ---------- */
+:root[data-ano-novo] {
+  --accent: #a16207;
+  --accent-hover: #854d0e;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(202, 138, 4, 0.12);
+  --accent-text: #a16207;
+}
+
+:root[data-ano-novo][data-theme='dark'] {
+  --accent: #facc15;
+  --accent-hover: #fde047;
+  --accent-contrast: #1a1400;
+  --accent-soft: rgba(250, 204, 21, 0.15);
+  --accent-text: #fde047;
+}
+
+/* ---------- Carnaval (sábado a terça de Carnaval): acento magenta ---------- */
+:root[data-carnaval] {
+  --accent: #be185d;
+  --accent-hover: #9d174d;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(219, 39, 119, 0.1);
+  --accent-text: #be185d;
+}
+
+:root[data-carnaval][data-theme='dark'] {
+  --accent: #ec4899;
+  --accent-hover: #f472b6;
+  --accent-contrast: #1f0313;
+  --accent-soft: rgba(236, 72, 153, 0.15);
+  --accent-text: #f9a8d4;
+}
+
+/* ---------- Páscoa (Sexta-feira Santa ao domingo): acento lilás ---------- */
+:root[data-pascoa] {
+  --accent: #7e22ce;
+  --accent-hover: #6b21a8;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(147, 51, 234, 0.1);
+  --accent-text: #7e22ce;
+}
+
+:root[data-pascoa][data-theme='dark'] {
+  --accent: #c084fc;
+  --accent-hover: #d8b4fe;
+  --accent-contrast: #1a0526;
+  --accent-soft: rgba(192, 132, 252, 0.15);
+  --accent-text: #d8b4fe;
+}
+
 /* ---------- Halloween (31/10): acento laranja de abóbora ---------- */
 :root[data-halloween] {
   --accent: #c2410c;
@@ -96,7 +148,7 @@
   --accent-text: #fdba74;
 }
 
-/* ---------- Natal (dezembro): acento vermelho e cor da neve ---------- */
+/* ---------- Natal (01/12 a 25/12): acento vermelho e cor da neve ---------- */
 :root[data-natal] {
   --accent: #b91c1c;
   --accent-hover: #991b1b;

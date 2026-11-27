@@ -1,0 +1,52 @@
+/* Balão: oval com brilho, nó e barbante; sobe da base da tela balançando. */
+.balloon {
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: calc(var(--size) * 1.2);
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55), transparent 35%), var(--color);
+  opacity: 0.9;
+  animation: balloon-rise 16s linear infinite;
+}
+
+/* Nó. */
+.balloon::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 6px;
+  height: 5px;
+  translate: -50% -1px;
+  border-radius: 2px;
+  background: var(--color);
+}
+
+/* Barbante. */
+.balloon::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  width: 1px;
+  height: calc(var(--size) * 1.4);
+  background: var(--text-subtle);
+  opacity: 0.6;
+}
+
+@keyframes balloon-rise {
+  0% {
+    translate: 0 105vh;
+    rotate: -4deg;
+  }
+  50% {
+    translate: var(--sway) 40vh;
+    rotate: 4deg;
+  }
+  100% {
+    translate: 0 -30vh;
+    rotate: -4deg;
+  }
+}

@@ -26,7 +26,7 @@ describe('tokens.css', () => {
     expect(blocks.get(DARK)?.get('color-scheme')).toBe('dark');
   });
 
-  it.each(['halloween', 'natal'])(
+  it.each(['ano-novo', 'carnaval', 'pascoa', 'halloween', 'natal'])(
     '%s troca as mesmas variáveis nos temas claro e escuro',
     (festa) => {
       const light = customProperties(blocks.get(`:root[data-${festa}]`));
@@ -37,10 +37,12 @@ describe('tokens.css', () => {
     },
   );
 
-  it('halloween e natal trocam toda a família do acento', () => {
+  it('as datas comemorativas trocam toda a família do acento', () => {
     const accentFamily = lightThemeTokens.filter((name) => name.startsWith('--accent'));
 
-    expect(customProperties(blocks.get(':root[data-halloween]'))).toEqual(accentFamily);
+    for (const festa of ['ano-novo', 'carnaval', 'pascoa', 'halloween']) {
+      expect(customProperties(blocks.get(`:root[data-${festa}]`))).toEqual(accentFamily);
+    }
     expect(customProperties(blocks.get(':root[data-natal]'))).toEqual(
       [...accentFamily, '--snow'].sort(),
     );

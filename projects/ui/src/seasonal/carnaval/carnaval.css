@@ -1,0 +1,65 @@
+/* Confete: cai girando e "vira" no ar (achata e volta), com um leve balanço lateral. */
+.confetto {
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: calc(var(--size) * 0.45);
+  border-radius: 1px;
+  background: var(--color);
+  animation:
+    confetti-fall var(--duration) linear var(--delay) infinite,
+    confetti-flip 0.7s ease-in-out infinite alternate;
+}
+
+.confetto--round {
+  height: var(--size);
+  border-radius: 50%;
+}
+
+@keyframes confetti-fall {
+  0% {
+    translate: 0 -20px;
+    rotate: 0deg;
+  }
+  50% {
+    translate: var(--sway) 52vh;
+  }
+  100% {
+    translate: 0 105vh;
+    rotate: var(--spin);
+  }
+}
+
+@keyframes confetti-flip {
+  to {
+    scale: 1 0.25;
+  }
+}
+
+/* Serpentina: desce devagar, balançando. */
+.serpentine {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 84px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--color);
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: serpentine-fall 18s linear infinite;
+}
+
+@keyframes serpentine-fall {
+  0% {
+    translate: 0 -100px;
+    rotate: 0deg;
+  }
+  50% {
+    rotate: var(--spin);
+  }
+  100% {
+    translate: 0 110vh;
+    rotate: 0deg;
+  }
+}

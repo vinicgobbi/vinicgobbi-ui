@@ -1,0 +1,44 @@
+@if (active()) {
+  <div class="decor" aria-hidden="true">
+    @for (firework of fireworks(); track firework.id) {
+      <div
+        class="firework"
+        [style.left.%]="firework.x"
+        [style.top.%]="firework.y"
+        [style.--color]="firework.color"
+        [style.--radius.px]="firework.radius"
+        [style.--duration.s]="firework.duration"
+        [style.--delay.s]="firework.delay"
+      >
+        @for (angle of sparkAngles; track angle) {
+          <span class="spark" [style.--angle.deg]="angle"></span>
+        }
+      </div>
+    }
+
+    @for (item of burst(); track item.id) {
+      <span
+        class="burst"
+        [style.--dx]="item.dx"
+        [style.--dy]="item.dy"
+        [style.--spin]="item.spin"
+        [style.font-size.px]="item.size"
+        [style.animation-delay.ms]="item.delay"
+        >{{ item.icon }}</span
+      >
+    }
+  </div>
+
+  <div class="greeting" role="status">
+    <button
+      type="button"
+      class="greeting__action"
+      (click)="release()"
+      aria-label="Soltar fogos"
+      title="Soltar fogos"
+    >
+      🥂
+    </button>
+    <p>Feliz Ano Novo!</p>
+  </div>
+}

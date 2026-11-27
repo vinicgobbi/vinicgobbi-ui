@@ -1,0 +1,58 @@
+/* Ovinho: formato de ovo, com uma faixa no meio; desce devagar, balançando. */
+.egg {
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: calc(var(--size) * 1.3);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(var(--color) 0 42%, var(--band) 42% 54%, var(--color) 54%);
+  box-shadow: inset -2px -3px 0 rgba(0, 0, 0, 0.08);
+  animation: egg-fall 18s linear infinite;
+}
+
+@keyframes egg-fall {
+  0% {
+    translate: 0 -30px;
+    rotate: -15deg;
+  }
+  50% {
+    translate: var(--sway) 52vh;
+    rotate: 15deg;
+  }
+  100% {
+    translate: 0 105vh;
+    rotate: -15deg;
+  }
+}
+
+/* Coelho: atravessa a base da tela da área de conteúdo até a borda, pulando. */
+.bunny {
+  position: absolute;
+  bottom: 0.25rem;
+  left: var(--start);
+  animation: bunny-cross 16s linear 2s infinite both;
+}
+
+.bunny__body {
+  display: block;
+  font-size: 1.75rem;
+  line-height: 1;
+  /* O emoji olha para a esquerda; vira para o sentido do caminho. */
+  scale: -1 1;
+  animation: bunny-hop 0.55s ease-out infinite alternate;
+}
+
+@keyframes bunny-cross {
+  from {
+    translate: -3rem 0;
+  }
+  to {
+    translate: calc(100vw - var(--start) + 3rem) 0;
+  }
+}
+
+@keyframes bunny-hop {
+  to {
+    translate: 0 -1.1rem;
+  }
+}

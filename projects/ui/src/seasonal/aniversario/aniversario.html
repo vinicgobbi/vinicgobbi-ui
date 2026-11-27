@@ -1,0 +1,40 @@
+@if (active()) {
+  <div class="decor" aria-hidden="true">
+    @for (balloon of balloons(); track balloon.id) {
+      <span
+        class="balloon"
+        [style.left.%]="balloon.left"
+        [style.--size.px]="balloon.size"
+        [style.--color]="balloon.color"
+        [style.--sway.px]="balloon.sway"
+        [style.animation-duration.s]="balloon.duration"
+        [style.animation-delay.s]="balloon.delay"
+      ></span>
+    }
+
+    @for (item of burst(); track item.id) {
+      <span
+        class="burst"
+        [style.--dx]="item.dx"
+        [style.--dy]="item.dy"
+        [style.--spin]="item.spin"
+        [style.font-size.px]="item.size"
+        [style.animation-delay.ms]="item.delay"
+        >{{ item.icon }}</span
+      >
+    }
+  </div>
+
+  <div class="greeting" role="status">
+    <button
+      type="button"
+      class="greeting__action"
+      (click)="release()"
+      aria-label="Soltar balões"
+      title="Soltar balões"
+    >
+      🎂
+    </button>
+    <p>Hoje é meu aniversário!</p>
+  </div>
+}
