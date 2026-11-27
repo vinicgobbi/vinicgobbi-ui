@@ -1,3 +1,11 @@
+## v0.3.0 (2026-11-27)
+
+### Feat
+
+- **showcase**: mostra as datas comemorativas com a data simulada
+- **seasonal**: adiciona Ano Novo, Carnaval, Páscoa e aniversário
+- **seasonal**: adiciona calendário das datas e relógio simulável
+
 ## v0.2.0 (2026-11-27)
 
 ### BREAKING CHANGE
