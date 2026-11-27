@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DOCUMENT,
+  DestroyRef,
   afterNextRender,
   inject,
   input,
@@ -28,8 +29,8 @@ const SWARM_DURATION = 2400;
 
 /**
  * Decoração de Halloween: morcegos, aranha, saudação e acento laranja (`data-halloween`, ver
- * styles/tokens.css). A data é checada no navegador, no fuso de quem visita, para valer apenas
- * no próprio dia; no SSR e no prerender nada é renderizado.
+ * styles/tokens.css). Fica ativa o dia inteiro, sem opção de fechar. A data é checada no
+ * navegador, no fuso de quem visita; no SSR e no prerender nada é renderizado.
  */
 @Component({
   selector: 'vg-halloween',
@@ -57,10 +58,16 @@ export class Halloween {
 
   constructor() {
     afterNextRender(() => {
-      if (!isHalloween()) return;
+      if (!isHalloween()) {
+        return;
+      }
       this.active.set(true);
       this.document.documentElement.setAttribute('data-halloween', '');
     });
+    // Ao sair da tela (ex.: uma área do app sem decoração), o acento volta ao normal.
+    inject(DestroyRef).onDestroy(() =>
+      this.document.documentElement.removeAttribute('data-halloween'),
+    );
   }
 
   protected release(): void {
@@ -75,11 +82,5 @@ export class Halloween {
     setTimeout(() => {
       this.swarm.update((atual) => atual.filter((bat) => !novos.includes(bat)));
     }, SWARM_DURATION + 400);
-  }
-
-  protected close(): void {
-    this.active.set(false);
-    this.swarm.set([]);
-    this.document.documentElement.removeAttribute('data-halloween');
   }
 }

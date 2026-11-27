@@ -2,49 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   DOCUMENT,
-  ElementRef,
-  Injector,
+  DestroyRef,
   afterNextRender,
   inject,
   input,
   signal,
-  viewChild,
 } from '@angular/core';
 import { SeasonalPlacement } from '../placement';
 
 /** O mês de dezembro inteiro, no fuso de quem está visitando. */
 export function isNatal(hoje = new Date()): boolean {
   return hoje.getMonth() === 11;
-}
-
-const STORAGE_KEY = 'natal-dispensado';
-
-/**
- * Quem fechou a decoração continua sem ela nas próximas visitas, até trazê-la de volta pelo
- * botão ou até o dezembro seguinte.
- */
-export function foiDispensado(ano: number): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === String(ano);
-  } catch {
-    return false;
-  }
-}
-
-export function dispensar(ano: number): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, String(ano));
-  } catch {
-    // Armazenamento indisponível (ex.: modo privado): fecha só nesta visita.
-  }
-}
-
-export function restaurar(): void {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // Armazenamento indisponível: nada foi salvo, então não há o que desfazer.
-  }
 }
 
 interface Flake {
@@ -78,8 +46,8 @@ function random(min: number, max: number): number {
 
 /**
  * Decoração de Natal: neve, trenó, enfeites, saudação e acento vermelho (`data-natal`, ver
- * styles/tokens.css). A data é checada no navegador, no fuso de quem visita; no SSR e no
- * prerender nada é renderizado.
+ * styles/tokens.css). Fica ativa o mês inteiro, sem opção de fechar. A data é checada no
+ * navegador, no fuso de quem visita; no SSR e no prerender nada é renderizado.
  */
 @Component({
   selector: 'vg-natal',
@@ -90,16 +58,11 @@ function random(min: number, max: number): number {
 })
 export class Natal {
   private readonly document = inject(DOCUMENT);
-  private readonly injector = inject(Injector);
-  private readonly closeButton = viewChild<ElementRef<HTMLElement>>('closeButton');
-  private readonly restoreButton = viewChild<ElementRef<HTMLElement>>('restoreButton');
   private nextId = 0;
 
   /** Onde ficam os enfeites; ver SeasonalPlacement. */
   readonly placement = input<SeasonalPlacement>('margins');
 
-  /** Dezembro: a decoração, ou o botão para trazê-la de volta, está disponível. */
-  protected readonly available = signal(false);
   protected readonly active = signal(false);
   protected readonly flakes = signal<Flake[]>([]);
   /** Revoada solta ao clicar no presente. */
@@ -112,11 +75,12 @@ export class Natal {
 
   constructor() {
     afterNextRender(() => {
-      const hoje = new Date();
-      if (!isNatal(hoje)) return;
-      this.available.set(true);
-      if (!foiDispensado(hoje.getFullYear())) this.show();
+      if (isNatal()) {
+        this.show();
+      }
     });
+    // Ao sair da tela (ex.: uma área do app sem decoração), o acento volta ao normal.
+    inject(DestroyRef).onDestroy(() => this.document.documentElement.removeAttribute('data-natal'));
   }
 
   protected release(): void {
@@ -133,26 +97,6 @@ export class Natal {
     setTimeout(() => {
       this.burst.update((atual) => atual.filter((item) => !novos.includes(item)));
     }, BURST_DURATION + 400);
-  }
-
-  protected close(): void {
-    dispensar(new Date().getFullYear());
-    this.active.set(false);
-    this.flakes.set([]);
-    this.burst.set([]);
-    this.document.documentElement.removeAttribute('data-natal');
-    this.focusAfterRender(this.restoreButton);
-  }
-
-  protected restore(): void {
-    restaurar();
-    this.show();
-    this.focusAfterRender(this.closeButton);
-  }
-
-  /** O botão clicado some da tela: leva o foco para o que o substitui, sem perder a posição. */
-  private focusAfterRender(button: () => ElementRef<HTMLElement> | undefined): void {
-    afterNextRender(() => button()?.nativeElement.focus(), { injector: this.injector });
   }
 
   private show(): void {

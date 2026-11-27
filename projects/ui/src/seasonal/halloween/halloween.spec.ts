@@ -44,13 +44,20 @@ describe('Halloween', () => {
     expect(root.hasAttribute('data-halloween')).toBe(true);
   });
 
-  it('remove a decoração e o acento ao fechar', async () => {
-    const { fixture, element } = await renderOn(new Date(2026, 9, 31, 12));
+  it('fica ativa o dia inteiro: a saudação só tem a abóbora, sem fechar', async () => {
+    const { element } = await renderOn(new Date(2026, 9, 31, 12));
+    const buttons = [...element.querySelectorAll('button')].map((button) =>
+      button.getAttribute('aria-label'),
+    );
 
-    element.querySelector<HTMLButtonElement>('.greeting__close')?.click();
-    await fixture.whenStable();
+    expect(buttons).toEqual(['Soltar morcegos']);
+  });
 
-    expect(element.querySelector('.greeting')).toBeNull();
+  it('devolve o acento normal ao sair da tela', async () => {
+    const { fixture } = await renderOn(new Date(2026, 9, 31, 12));
+
+    fixture.destroy();
+
     expect(root.hasAttribute('data-halloween')).toBe(false);
   });
 

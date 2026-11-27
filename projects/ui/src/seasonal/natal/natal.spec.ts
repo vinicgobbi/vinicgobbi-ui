@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Natal, dispensar, foiDispensado, isNatal, restaurar } from './natal';
+import { Natal, isNatal } from './natal';
 
 describe('isNatal', () => {
   it('vale o mês de dezembro inteiro', () => {
@@ -11,32 +11,11 @@ describe('isNatal', () => {
   });
 });
 
-describe('dispensar', () => {
-  beforeEach(() => localStorage.removeItem('natal-dispensado'));
-  afterEach(() => localStorage.removeItem('natal-dispensado'));
-
-  it('lembra de quem fechou a decoração só naquele ano', () => {
-    expect(foiDispensado(2026)).toBe(false);
-    dispensar(2026);
-    expect(foiDispensado(2026)).toBe(true);
-    expect(foiDispensado(2027)).toBe(false);
-  });
-
-  it('volta a mostrar a decoração depois de restaurar', () => {
-    dispensar(2026);
-    restaurar();
-    expect(foiDispensado(2026)).toBe(false);
-  });
-});
-
 describe('Natal', () => {
   const root = document.documentElement;
 
-  beforeEach(() => localStorage.removeItem('natal-dispensado'));
-
   afterEach(() => {
     vi.useRealTimers();
-    localStorage.removeItem('natal-dispensado');
     root.removeAttribute('data-natal');
   });
 
@@ -48,7 +27,7 @@ describe('Natal', () => {
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  it('fica de fora fora de dezembro, sem nem o botão de restaurar', async () => {
+  it('fica de fora fora de dezembro', async () => {
     const { element } = await renderOn(new Date(2026, 10, 30, 12));
 
     expect(element.children).toHaveLength(0);
@@ -60,40 +39,46 @@ describe('Natal', () => {
 
     expect(element.querySelector('.greeting')?.textContent).toContain('Feliz Natal!');
     expect(element.querySelectorAll('.flake').length).toBeGreaterThan(0);
+    expect(element.querySelector('.decor')?.getAttribute('aria-hidden')).toBe('true');
     expect(root.hasAttribute('data-natal')).toBe(true);
   });
 
-  it('ao fechar, guarda a escolha e leva o foco ao botão de restaurar', async () => {
-    const { fixture, element } = await renderOn(new Date(2026, 11, 10, 12));
+  it('fica ativa o período inteiro: a saudação só tem o presente, sem fechar', async () => {
+    const { element } = await renderOn(new Date(2026, 11, 10, 12));
+    const buttons = [...element.querySelectorAll('button')].map((button) =>
+      button.getAttribute('aria-label'),
+    );
 
-    element.querySelector<HTMLButtonElement>('.greeting__close')?.click();
-    await fixture.whenStable();
-
-    const restore = element.querySelector<HTMLButtonElement>('.restore');
-    expect(element.querySelector('.decor')).toBeNull();
-    expect(root.hasAttribute('data-natal')).toBe(false);
-    expect(foiDispensado(2026)).toBe(true);
-    expect(document.activeElement).toBe(restore);
+    expect(buttons).toEqual(['Abrir presente']);
   });
 
-  it('continua fechada nas próximas visitas do mesmo dezembro', async () => {
-    dispensar(2026);
-    const { element } = await renderOn(new Date(2026, 11, 20, 12));
+  it('ignora a escolha de fechar salva pelas versões anteriores', async () => {
+    localStorage.setItem('natal-dispensado', '2026');
 
-    expect(element.querySelector('.decor')).toBeNull();
-    expect(element.querySelector('.restore')).not.toBeNull();
-  });
-
-  it('volta ao restaurar, com o foco no botão de fechar', async () => {
-    dispensar(2026);
-    const { fixture, element } = await renderOn(new Date(2026, 11, 20, 12));
-
-    element.querySelector<HTMLButtonElement>('.restore')?.click();
-    await fixture.whenStable();
+    const { element } = await renderOn(new Date(2026, 11, 10, 12));
 
     expect(element.querySelector('.decor')).not.toBeNull();
-    expect(root.hasAttribute('data-natal')).toBe(true);
-    expect(foiDispensado(2026)).toBe(false);
-    expect(document.activeElement).toBe(element.querySelector('.greeting__close'));
+    localStorage.removeItem('natal-dispensado');
+  });
+
+  it('solta a revoada ao abrir o presente, que some depois', async () => {
+    const { fixture, element } = await renderOn(new Date(2026, 11, 10, 12));
+    vi.useFakeTimers({ toFake: ['Date', 'setTimeout'] });
+
+    element.querySelector<HTMLButtonElement>('.greeting__gift')?.click();
+    await fixture.whenStable();
+    expect(element.querySelectorAll('.burst').length).toBeGreaterThan(0);
+
+    vi.advanceTimersByTime(3000);
+    await fixture.whenStable();
+    expect(element.querySelectorAll('.burst')).toHaveLength(0);
+  });
+
+  it('devolve o acento normal ao sair da tela', async () => {
+    const { fixture } = await renderOn(new Date(2026, 11, 10, 12));
+
+    fixture.destroy();
+
+    expect(root.hasAttribute('data-natal')).toBe(false);
   });
 });
