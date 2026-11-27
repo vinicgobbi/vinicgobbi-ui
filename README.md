@@ -129,15 +129,18 @@ Cada nome guarda o próprio estado recolhido (`localStorage`: `sidebar.<nome>`).
 
 ## Instalando num app
 
-O GitHub Packages exige autenticação até para instalar pacotes públicos. No app, um `.npmrc` aponta o escopo para o registry do GitHub:
+O GitHub Packages exige autenticação até para instalar pacotes públicos. No app, o `.npmrc` só aponta o escopo para o registry do GitHub:
 
 ```ini
 @vinicgobbi:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-- **Localmente:** exporte `NODE_AUTH_TOKEN` com um token do GitHub com o escopo `read:packages`.
-- **No GitHub Actions:** dê `packages: read` ao job e passe `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` no `pnpm install`. Em `@vinicgobbi/ui > Package settings > Manage Actions access`, libere o repositório do app.
+O token **não** vai nesse arquivo: o pnpm 12 não expande variáveis em credenciais do `.npmrc` do repositório, para um repo não conseguir vazar tokens. Ele vem da configuração do usuário:
+
+- **Localmente:** uma vez só, no `~/.npmrc`, `//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}`. Antes de instalar, `export NODE_AUTH_TOKEN=$(gh auth token)`, com um token que tenha o escopo `read:packages` (`gh auth refresh -s read:packages`).
+- **No GitHub Actions:** dê `packages: read` ao job, passe `registry-url: https://npm.pkg.github.com` e `scope: '@vinicgobbi'` ao `actions/setup-node` (ele gera o `.npmrc` de usuário) e `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` no `pnpm install`. O pacote é público, então o `GITHUB_TOKEN` de qualquer repositório consegue lê-lo.
+
+Logo depois de cada versão nova, o `minimumReleaseAge` do pnpm recusa o pacote por um tempo; o `pnpm add` registra uma exceção só para aquela versão em `pnpm-workspace.yaml`.
 
 ## Versões e publicação
 
