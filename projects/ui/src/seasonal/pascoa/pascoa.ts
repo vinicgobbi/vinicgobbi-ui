@@ -34,6 +34,7 @@ const EGG_COLORS: readonly [string, string][] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Pascoa extends SeasonalDecoration {
+  protected readonly occasion = 'pascoa' as const;
   protected readonly attribute = 'data-pascoa';
   protected readonly burstIcons = ['🥚', '🐣', '🐰', '🍫', '🌷'];
   protected readonly eggs = signal<Egg[]>([]);

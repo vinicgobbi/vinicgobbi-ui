@@ -30,6 +30,7 @@ const SPARK_ANGLES = Array.from({ length: 12 }, (_, index) => index * 30);
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnoNovo extends SeasonalDecoration {
+  protected readonly occasion = 'ano-novo' as const;
   protected readonly attribute = 'data-ano-novo';
   protected readonly burstIcons = ['🎆', '🎇', '✨', '🥂', '🎉'];
   protected readonly sparkAngles = SPARK_ANGLES;

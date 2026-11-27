@@ -5,6 +5,7 @@ import { Carnaval } from './carnaval/carnaval';
 import { Halloween } from './halloween/halloween';
 import { Natal } from './natal/natal';
 import { Pascoa } from './pascoa/pascoa';
+import { SeasonalGreetingMode } from './greeting';
 import { SeasonalPlacement } from './placement';
 
 /**
@@ -16,12 +17,12 @@ import { SeasonalPlacement } from './placement';
   selector: 'vg-seasonal',
   imports: [AnoNovo, Carnaval, Pascoa, Aniversario, Halloween, Natal],
   template: `
-    <vg-ano-novo />
-    <vg-carnaval />
-    <vg-pascoa />
-    <vg-aniversario />
-    <vg-halloween [placement]="placement()" />
-    <vg-natal [placement]="placement()" />
+    <vg-ano-novo [greeting]="greeting()" />
+    <vg-carnaval [greeting]="greeting()" />
+    <vg-pascoa [greeting]="greeting()" />
+    <vg-aniversario [greeting]="greeting()" />
+    <vg-halloween [placement]="placement()" [greeting]="greeting()" />
+    <vg-natal [placement]="placement()" [greeting]="greeting()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
@@ -29,4 +30,9 @@ import { SeasonalPlacement } from './placement';
 export class Seasonal {
   /** Onde Natal e Halloween penduram enfeites e aranha; ver SeasonalPlacement. */
   readonly placement = input<SeasonalPlacement>('margins');
+  /**
+   * `none` tira o balão da saudação; o app a mostra onde quiser com o SeasonalGreeting. Ver
+   * SeasonalGreetingMode.
+   */
+  readonly greeting = input<SeasonalGreetingMode>('floating');
 }

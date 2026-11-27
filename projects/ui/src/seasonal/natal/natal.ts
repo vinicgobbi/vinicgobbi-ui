@@ -9,8 +9,15 @@ import {
   signal,
 } from '@angular/core';
 import { isNatal } from '../calendar';
+import {
+  BurstOrigin,
+  SEASONAL_GREETINGS,
+  SeasonalGreeting,
+  SeasonalGreetingMode,
+} from '../greeting';
 import { SeasonalPlacement } from '../placement';
 import { SEASONAL_DATE } from '../seasonal-date';
+import { burstTarget, registerGreeting } from '../shared/seasonal-decoration';
 
 interface Flake {
   id: number;
@@ -30,6 +37,8 @@ interface Burst {
   size: number;
   delay: number;
   spin: string;
+  x?: number;
+  y?: number;
 }
 
 const FLAKE_COUNT = 36;
@@ -60,6 +69,10 @@ export class Natal {
 
   /** Onde ficam os enfeites; ver SeasonalPlacement. */
   readonly placement = input<SeasonalPlacement>('margins');
+  /** Onde fica a saudação; ver SeasonalGreetingMode. */
+  readonly greeting = input<SeasonalGreetingMode>('floating');
+
+  protected readonly text = SEASONAL_GREETINGS.natal;
 
   protected readonly active = signal(false);
   protected readonly flakes = signal<Flake[]>([]);
@@ -72,24 +85,29 @@ export class Natal {
   protected readonly antlers = 'M28 9 L25 2 M26.5 5.5 L22 3.5 M31 9 L33 2 M32 5.5 L37 4';
 
   constructor() {
+    const destroyRef = inject(DestroyRef);
+    const greeting = inject(SeasonalGreeting);
+
     afterNextRender(() => {
       if (isNatal(this.today())) {
         this.show();
+        registerGreeting('natal', (origin) => this.release(origin), destroyRef, greeting);
       }
     });
     // Ao sair da tela (ex.: uma área do app sem decoração), o acento volta ao normal.
-    inject(DestroyRef).onDestroy(() => this.document.documentElement.removeAttribute('data-natal'));
+    destroyRef.onDestroy(() => this.document.documentElement.removeAttribute('data-natal'));
   }
 
-  protected release(): void {
-    const novos = Array.from({ length: BURST_SIZE }, () => ({
+  protected release(origin?: BurstOrigin): void {
+    const novos: Burst[] = Array.from({ length: BURST_SIZE }, () => ({
       id: this.nextId++,
       icon: BURST_ICONS[Math.floor(Math.random() * BURST_ICONS.length)],
-      dx: `${Math.round(random(-5, 85))}vw`,
-      dy: `${-Math.round(random(30, 90))}vh`,
+      ...burstTarget(origin),
       size: Math.round(random(16, 34)),
       delay: Math.round(random(0, 400)),
       spin: `${Math.round(random(-200, 200))}deg`,
+      x: origin?.x,
+      y: origin?.y,
     }));
     this.burst.update((atual) => [...atual, ...novos]);
     setTimeout(() => {
