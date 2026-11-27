@@ -6,42 +6,40 @@
     <span class="brand__name">vinicgobbi-ui</span>
   </a>
 
+  <button
+    sidebarActions
+    type="button"
+    class="sidebar-action"
+    [attr.aria-label]="themeLabel()"
+    [vgTooltip]="themeLabel()"
+    (click)="theme.toggle()"
+  >
+    <i
+      class="bi"
+      [class.bi-sun]="theme.theme() === 'dark'"
+      [class.bi-moon-stars]="theme.theme() === 'light'"
+      aria-hidden="true"
+    ></i>
+  </button>
+
   <nav aria-label="Seções">
-    <h2 class="sidebar-section" id="menu-tokens">Vitrine</h2>
-    <ul class="sidebar-links" aria-labelledby="menu-tokens">
-      @for (section of sections; track section.id) {
-        <li>
-          <a
-            class="sidebar-link"
-            [href]="'#' + section.id"
-            [vgTooltip]="section.label"
-            [vgTooltipDisabled]="!sidebar.showTooltips()"
-          >
-            <i class="bi {{ section.icon }}" aria-hidden="true"></i>
-            <span class="sidebar-link__label">{{ section.label }}</span>
-          </a>
-        </li>
-      }
+    <ul class="sidebar-links">
+      <li>
+        <vg-sidebar-group label="Vitrine" icon="grid" [expanded]="true">
+          <ul class="sidebar-sublinks">
+            @for (section of sections; track section.id) {
+              <li>
+                <a class="sidebar-link sidebar-link--sub" [href]="'#' + section.id">
+                  <i class="bi {{ section.icon }}" aria-hidden="true"></i>
+                  <span class="sidebar-link__label">{{ section.label }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </vg-sidebar-group>
+      </li>
     </ul>
   </nav>
-
-  <ng-container sidebarFooter>
-    <button
-      type="button"
-      class="sidebar-link"
-      [vgTooltip]="themeLabel()"
-      [vgTooltipDisabled]="!sidebar.showTooltips()"
-      (click)="theme.toggle()"
-    >
-      <i
-        class="bi"
-        [class.bi-sun]="theme.theme() === 'dark'"
-        [class.bi-moon-stars]="theme.theme() === 'light'"
-        aria-hidden="true"
-      ></i>
-      <span class="sidebar-link__label">{{ themeLabel() }}</span>
-    </button>
-  </ng-container>
 </vg-sidebar>
 
 <div class="layout__content">

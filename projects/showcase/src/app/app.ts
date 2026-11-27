@@ -2,7 +2,7 @@ import { Component, Injectable, computed, inject, signal } from '@angular/core';
 import { UI_VERSION } from '@vinicgobbi/ui';
 import { RevealOnScroll } from '@vinicgobbi/ui/a11y';
 import { SEASONAL_DATE, Seasonal, easterSunday } from '@vinicgobbi/ui/seasonal';
-import { Sidebar, SidebarState, provideSidebar } from '@vinicgobbi/ui/sidebar';
+import { Sidebar, SidebarGroup, provideSidebar } from '@vinicgobbi/ui/sidebar';
 import { type Theme, ThemeService } from '@vinicgobbi/ui/theme';
 import { Tooltip } from '@vinicgobbi/ui/tooltip';
 
@@ -68,7 +68,7 @@ export const SECTIONS = [
  */
 @Component({
   selector: 'app-root',
-  imports: [RevealOnScroll, Seasonal, Sidebar, Tooltip],
+  imports: [RevealOnScroll, Seasonal, Sidebar, SidebarGroup, Tooltip],
   styleUrl: './app.scss',
   templateUrl: './app.html',
   providers: [
@@ -87,7 +87,6 @@ export const SECTIONS = [
 export class App {
   protected readonly theme = inject(ThemeService);
   private readonly preview = inject(SeasonalPreview);
-  protected readonly sidebar = inject(SidebarState);
   protected readonly sections = SECTIONS;
 
   protected readonly version = UI_VERSION;
