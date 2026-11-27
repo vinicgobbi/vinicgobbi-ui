@@ -1,0 +1,20 @@
+<button
+  type="button"
+  class="sidebar-link sidebar-group__toggle"
+  [class.sidebar-group__toggle--active]="active()"
+  [attr.aria-expanded]="state.showTooltips() ? null : expanded()"
+  [attr.aria-controls]="panelId"
+  [vgTooltip]="label()"
+  [vgTooltipDisabled]="!state.showTooltips()"
+  (click)="toggle()"
+>
+  <i class="bi bi-{{ icon() }}" aria-hidden="true"></i>
+  <span class="sidebar-link__label">{{ label() }}</span>
+  <i class="bi bi-chevron-down sidebar-group__chevron" aria-hidden="true"></i>
+</button>
+
+<div [id]="panelId" class="sidebar-group__panel" [inert]="!expanded()">
+  <div class="sidebar-group__inner">
+    <ng-content />
+  </div>
+</div>
