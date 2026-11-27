@@ -1,3 +1,15 @@
+## v0.2.0 (2026-11-27)
+
+### BREAKING CHANGE
+
+- dispensar, foiDispensado e restaurar saem da API
+pública de @vinicgobbi/ui/seasonal.
+
+### Feat
+
+- **seasonal**: adiciona --seasonal-start para layouts com menu lateral
+- **seasonal**: mantém as decorações durante todo o período
+
 ## v0.1.0 (2026-11-27)
 
 ### Feat
