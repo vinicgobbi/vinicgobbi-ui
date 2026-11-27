@@ -47,6 +47,7 @@
     "./theme": "./src/theme/public-api.ts",
     "./seasonal": "./src/seasonal/public-api.ts",
     "./consent": "./src/consent/public-api.ts",
+    "./a11y": "./src/a11y/public-api.ts",
     "./tooltip": "./src/tooltip/public-api.ts",
     "./sidebar": "./src/sidebar/public-api.ts",
     "./styles/*.css": "./styles/*.css"
