@@ -1,7 +1,10 @@
-import { Component, DOCUMENT, inject, signal } from '@angular/core';
+import { Component, DOCUMENT, computed, inject, signal } from '@angular/core';
 import { UI_VERSION } from '@vinicgobbi/ui';
+import { RevealOnScroll } from '@vinicgobbi/ui/a11y';
+import { Sidebar, SidebarState, provideSidebar } from '@vinicgobbi/ui/sidebar';
+import { type Theme, ThemeService } from '@vinicgobbi/ui/theme';
+import { Tooltip } from '@vinicgobbi/ui/tooltip';
 
-type Theme = 'light' | 'dark';
 type Festa = 'nenhuma' | 'halloween' | 'natal';
 
 interface Swatch {
@@ -31,17 +34,31 @@ export const COLOR_TOKENS: readonly Swatch[] = [
   { token: '--info', description: 'Informação' },
 ];
 
+/** Seções da vitrine, também usadas como itens do menu lateral. */
+export const SECTIONS = [
+  { id: 'cores', label: 'Cores', icon: 'bi-palette' },
+  { id: 'tipografia', label: 'Tipografia', icon: 'bi-type' },
+  { id: 'componentes', label: 'Componentes', icon: 'bi-ui-checks-grid' },
+] as const;
+
 /**
- * Vitrine do @vinicgobbi/ui: tokens e componentes em CSS, com troca de tema e de data
- * comemorativa direto nos atributos do <html>, como os apps fazem.
+ * Vitrine do @vinicgobbi/ui, montada com a própria biblioteca: menu lateral, tema, dicas e
+ * revelar ao rolar. A data comemorativa é trocada direto nos atributos do <html>, para ver
+ * o acento de Halloween e Natal fora das datas.
  */
 @Component({
   selector: 'app-root',
+  imports: [RevealOnScroll, Sidebar, Tooltip],
   styleUrl: './app.scss',
   templateUrl: './app.html',
+  providers: [provideSidebar('showcase')],
+  host: { class: 'layout--sidebar' },
 })
 export class App {
   private readonly root = inject(DOCUMENT).documentElement;
+  protected readonly theme = inject(ThemeService);
+  protected readonly sidebar = inject(SidebarState);
+  protected readonly sections = SECTIONS;
 
   protected readonly version = UI_VERSION;
   protected readonly colorTokens = COLOR_TOKENS;
@@ -55,14 +72,13 @@ export class App {
     { value: 'natal', label: 'Natal' },
   ];
 
-  protected readonly theme = signal<Theme>(
-    this.root.getAttribute('data-theme') === 'light' ? 'light' : 'dark',
+  protected readonly themeLabel = computed(() =>
+    this.theme.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro',
   );
   protected readonly festa = signal<Festa>('nenhuma');
 
   protected setTheme(theme: Theme): void {
     this.theme.set(theme);
-    this.root.setAttribute('data-theme', theme);
   }
 
   protected setFesta(festa: Festa): void {

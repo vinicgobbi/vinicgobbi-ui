@@ -1,18 +1,26 @@
 import { DOCUMENT } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UI_VERSION } from '@vinicgobbi/ui';
-import { App, COLOR_TOKENS } from './app';
+import { stubWideScreen } from '../testing/wide-screen';
+import { hasThemeInitScript } from '@vinicgobbi/ui/theme';
+import indexHtml from '../index.html' with { loader: 'text' };
+import { App, COLOR_TOKENS, SECTIONS } from './app';
 
 describe('App', () => {
   let root: HTMLElement;
+  let restoreScreen: () => void;
 
   beforeEach(async () => {
+    restoreScreen = stubWideScreen();
     await TestBed.configureTestingModule({ imports: [App] }).compileComponents();
     root = TestBed.inject(DOCUMENT).documentElement;
     root.setAttribute('data-theme', 'dark');
   });
 
   afterEach(() => {
+    restoreScreen();
+    localStorage.clear();
+    root.removeAttribute('data-sidebar-showcase');
     root.removeAttribute('data-theme');
     root.removeAttribute('data-halloween');
     root.removeAttribute('data-natal');
@@ -69,5 +77,34 @@ describe('App', () => {
 
     button(element, 'Data comemorativa', 'Nenhuma').click();
     expect(root.hasAttribute('data-natal')).toBe(false);
+  });
+
+  it('tem um item no menu lateral para cada seção', async () => {
+    const { element } = await render();
+    const links = [
+      ...element.querySelectorAll<HTMLAnchorElement>('vg-sidebar .sidebar-link[href]'),
+    ];
+
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(
+      SECTIONS.map((section) => `#${section.id}`),
+    );
+  });
+
+  it('troca o tema pelo botão do menu lateral', async () => {
+    const { fixture, element } = await render();
+    const toggle = [...element.querySelectorAll<HTMLButtonElement>('.sidebar__footer button')].find(
+      (item) => item.textContent?.includes('Ativar tema claro'),
+    );
+
+    toggle?.click();
+    await fixture.whenStable();
+
+    expect(root.getAttribute('data-theme')).toBe('light');
+    expect(localStorage.getItem('theme')).toBe('light');
+    expect(toggle?.textContent).toContain('Ativar tema escuro');
+  });
+
+  it('o index.html traz o script anti-flash desta versão da biblioteca', () => {
+    expect(hasThemeInitScript(indexHtml)).toBe(true);
   });
 });

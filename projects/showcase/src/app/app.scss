@@ -1,11 +1,10 @@
 /* Só o arranjo da vitrine; a aparência vem toda de @vinicgobbi/ui. */
 .showcase-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   border-bottom: 1px solid var(--border);
-  background: var(--nav-bg);
-  backdrop-filter: blur(12px);
+}
+
+main:focus {
+  outline: none;
 }
 
 .showcase-header__inner {
