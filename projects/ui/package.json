@@ -40,6 +40,7 @@
   ],
   "exports": {
     ".": "./src/public-api.ts",
+    "./theme": "./src/theme/public-api.ts",
     "./styles/*.css": "./styles/*.css"
   }
 }
