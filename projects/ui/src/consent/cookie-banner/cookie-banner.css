@@ -1,0 +1,39 @@
+/* Usa .card e .btn de @vinicgobbi/ui/styles. Fica acima das decorações sazonais (40/55). */
+.consent {
+  position: fixed;
+  inset: auto 1rem 1rem;
+  z-index: var(--consent-z, 60);
+  max-width: 420px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-hover);
+}
+
+@media (min-width: 640px) {
+  .consent {
+    right: 1.5rem;
+    bottom: 1.5rem;
+    left: auto;
+  }
+}
+
+.consent__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font: 700 1rem var(--font-display);
+}
+
+.consent__text {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.consent__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
