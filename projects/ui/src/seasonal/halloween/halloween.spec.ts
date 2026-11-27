@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import halloweenCss from './halloween.css' with { loader: 'text' };
 import { Halloween, isHalloween } from './halloween';
 
 describe('isHalloween', () => {
@@ -80,5 +81,18 @@ describe('Halloween', () => {
 
     const edges = await renderOn(new Date(2026, 9, 31, 12), 'edges');
     expect(edges.element.getAttribute('data-placement')).toBe('edges');
+  });
+});
+
+describe('halloween.css', () => {
+  it('posiciona saudação, revoada e aranha a partir de --seasonal-start', () => {
+    expect(halloweenCss).toContain('--start: var(--seasonal-start, 0px)');
+    expect(halloweenCss).toContain('left: calc(var(--seasonal-start, 0px) + 1rem)');
+    expect(halloweenCss).toContain('left: calc(var(--start) + 1.25rem)');
+    expect(halloweenCss).toContain('left: calc(var(--start) + (100% - var(--start)');
+  });
+
+  it('permite ao app esconder a aranha', () => {
+    expect(halloweenCss).toContain('display: var(--seasonal-hanging-display, block)');
   });
 });

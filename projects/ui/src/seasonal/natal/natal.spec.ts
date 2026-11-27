@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import natalCss from './natal.css' with { loader: 'text' };
 import { Natal, isNatal } from './natal';
 
 describe('isNatal', () => {
@@ -80,5 +81,18 @@ describe('Natal', () => {
     fixture.destroy();
 
     expect(root.hasAttribute('data-natal')).toBe(false);
+  });
+});
+
+describe('natal.css', () => {
+  it('posiciona saudação, revoada e enfeites a partir de --seasonal-start', () => {
+    expect(natalCss).toContain('--start: var(--seasonal-start, 0px)');
+    expect(natalCss).toContain('left: calc(var(--seasonal-start, 0px) + 1rem)');
+    expect(natalCss).toContain('left: calc(var(--start) + 1.25rem)');
+    expect(natalCss).toContain('--inset-start: calc(var(--start) +');
+  });
+
+  it('permite ao app esconder os enfeites pendurados', () => {
+    expect(natalCss).toContain('display: var(--seasonal-hanging-display, block)');
   });
 });

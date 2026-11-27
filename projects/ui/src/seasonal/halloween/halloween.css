@@ -1,4 +1,13 @@
+/*
+ * Ajustes que o app pode definir no :root (os mesmos do Natal):
+ * - --seasonal-z (decoração, padrão 40) e --seasonal-greeting-z (saudação, padrão 55);
+ * - --seasonal-start (padrão 0px): onde começa a área de conteúdo, ex.: a largura de um menu
+ *   lateral fixo;
+ * - --seasonal-hanging-display (padrão block): none esconde a aranha, quando a margem livre do
+ *   layout for estreita demais.
+ */
 .spooky {
+  --start: var(--seasonal-start, 0px);
   position: fixed;
   inset: 0;
   z-index: var(--seasonal-z, 40);
@@ -94,7 +103,7 @@
 /* Revoada: sai da abóbora e se espalha para cima. */
 .bat--swarm {
   top: auto;
-  left: 1.25rem;
+  left: calc(var(--start) + 1.25rem);
   bottom: 1.5rem;
   opacity: 0;
   animation: burst 2.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
@@ -133,15 +142,16 @@
   --offset: var(--nav-height);
   --min: calc(var(--offset) + 30px);
   --max: calc(var(--offset) + 150px);
+  display: var(--seasonal-hanging-display, block);
   position: absolute;
   top: 0;
-  left: calc((100% - var(--container)) / 4);
+  left: calc(var(--start) + (100% - var(--start) - var(--container)) / 4);
 }
 
 :host([data-placement='edges']) .spider {
   --offset: 0px;
   --max: 130px;
-  left: 12%;
+  left: calc(var(--start) + 12%);
 }
 
 @media (max-width: 1279px) {
@@ -182,7 +192,7 @@
 
 .greeting {
   position: fixed;
-  left: 1rem;
+  left: calc(var(--seasonal-start, 0px) + 1rem);
   bottom: 1rem;
   z-index: var(--seasonal-greeting-z, 55);
   display: flex;

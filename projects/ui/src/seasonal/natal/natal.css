@@ -1,10 +1,17 @@
 /*
- * Camadas: --seasonal-z (decoração, padrão 40) e --seasonal-greeting-z (saudação, padrão 55),
- * abaixo do aviso de cookies (60). O app pode redefinir no :root.
+ * Ajustes que o app pode definir no :root:
+ * - --seasonal-z (decoração, padrão 40) e --seasonal-greeting-z (saudação, padrão 55), abaixo do
+ *   aviso de cookies (60);
+ * - --seasonal-start (padrão 0px): onde começa a área de conteúdo. Com menu lateral fixo, a
+ *   largura dele: saudação, revoada e enfeites ficam fora do menu;
+ * - --seasonal-hanging-display (padrão block): none esconde os enfeites pendurados, quando a
+ *   margem livre do layout for estreita demais (media queries não aceitam variáveis).
  */
 .decor {
+  --start: var(--seasonal-start, 0px);
   /* Distância das laterais até os enfeites; ver placement no componente. */
-  --inset: calc((100% - var(--container)) / 4);
+  --inset-start: calc(var(--start) + (100% - var(--start) - var(--container)) / 4);
+  --inset-end: calc((100% - var(--start) - var(--container)) / 4);
   position: fixed;
   inset: 0;
   z-index: var(--seasonal-z, 40);
@@ -141,7 +148,7 @@
 /* Revoada: sai do presente e se espalha para cima. */
 .burst {
   position: absolute;
-  left: 1.25rem;
+  left: calc(var(--start) + 1.25rem);
   bottom: 1.5rem;
   line-height: 1;
   opacity: 0;
@@ -180,23 +187,25 @@
   --length: calc(var(--offset) + 60px);
   --ball: #dc2626;
   --ball-dark: #7f1d1d;
+  display: var(--seasonal-hanging-display, block);
   position: absolute;
   top: 0;
 }
 
 .ornament--left {
-  left: var(--inset);
+  left: var(--inset-start);
 }
 
 .ornament--right {
   --length: calc(var(--offset) + 110px);
   --ball: #16a34a;
   --ball-dark: #14532d;
-  right: var(--inset);
+  right: var(--inset-end);
 }
 
 :host([data-placement='edges']) .decor {
-  --inset: 12%;
+  --inset-start: calc(var(--start) + 12%);
+  --inset-end: 12%;
 }
 
 :host([data-placement='edges']) .ornament {
@@ -268,7 +277,7 @@
 
 .greeting {
   position: fixed;
-  left: 1rem;
+  left: calc(var(--seasonal-start, 0px) + 1rem);
   bottom: 1rem;
   z-index: var(--seasonal-greeting-z, 55);
   display: flex;
