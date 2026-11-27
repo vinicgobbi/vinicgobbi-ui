@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import natalCss from './natal.css' with { loader: 'text' };
-import { Natal, isNatal } from './natal';
+import { isNatal } from '../calendar';
+import { Natal } from './natal';
 
 describe('isNatal', () => {
-  it('vale o mês de dezembro inteiro', () => {
+  it('vale de 01/12 a 25/12', () => {
     expect(isNatal(new Date(2026, 11, 1, 0, 0))).toBe(true);
-    expect(isNatal(new Date(2026, 11, 25))).toBe(true);
-    expect(isNatal(new Date(2026, 11, 31, 23, 59))).toBe(true);
+    expect(isNatal(new Date(2026, 11, 25, 23, 59))).toBe(true);
+    expect(isNatal(new Date(2026, 11, 26, 0, 0))).toBe(false);
+    expect(isNatal(new Date(2026, 11, 31, 23, 59))).toBe(false);
     expect(isNatal(new Date(2026, 10, 30, 23, 59))).toBe(false);
     expect(isNatal(new Date(2027, 0, 1, 0, 0))).toBe(false);
   });

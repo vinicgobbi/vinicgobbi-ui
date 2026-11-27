@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import halloweenCss from './halloween.css' with { loader: 'text' };
-import { Halloween, isHalloween } from './halloween';
+import { isHalloween } from '../calendar';
+import { Halloween } from './halloween';
 
 describe('isHalloween', () => {
   it('vale só no dia 31 de outubro', () => {

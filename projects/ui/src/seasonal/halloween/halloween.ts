@@ -9,12 +9,9 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { isHalloween } from '../calendar';
 import { SeasonalPlacement } from '../placement';
-
-/** Só no dia 31 de outubro, no fuso de quem está visitando. */
-export function isHalloween(hoje = new Date()): boolean {
-  return hoje.getMonth() === 9 && hoje.getDate() === 31;
-}
+import { SEASONAL_DATE } from '../seasonal-date';
 
 interface SwarmBat {
   id: number;
@@ -42,6 +39,7 @@ const SWARM_DURATION = 2400;
 })
 export class Halloween {
   private readonly document = inject(DOCUMENT);
+  private readonly today = inject(SEASONAL_DATE);
   private nextId = 0;
 
   /** Onde fica a aranha; ver SeasonalPlacement. */
@@ -58,7 +56,7 @@ export class Halloween {
 
   constructor() {
     afterNextRender(() => {
-      if (!isHalloween()) {
+      if (!isHalloween(this.today())) {
         return;
       }
       this.active.set(true);

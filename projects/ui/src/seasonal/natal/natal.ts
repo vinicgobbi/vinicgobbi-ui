@@ -8,12 +8,9 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { isNatal } from '../calendar';
 import { SeasonalPlacement } from '../placement';
-
-/** O mês de dezembro inteiro, no fuso de quem está visitando. */
-export function isNatal(hoje = new Date()): boolean {
-  return hoje.getMonth() === 11;
-}
+import { SEASONAL_DATE } from '../seasonal-date';
 
 interface Flake {
   id: number;
@@ -46,7 +43,7 @@ function random(min: number, max: number): number {
 
 /**
  * Decoração de Natal: neve, trenó, enfeites, saudação e acento vermelho (`data-natal`, ver
- * styles/tokens.css). Fica ativa o mês inteiro, sem opção de fechar. A data é checada no
+ * styles/tokens.css). Fica ativa de 01/12 a 25/12, sem opção de fechar. A data é checada no
  * navegador, no fuso de quem visita; no SSR e no prerender nada é renderizado.
  */
 @Component({
@@ -58,6 +55,7 @@ function random(min: number, max: number): number {
 })
 export class Natal {
   private readonly document = inject(DOCUMENT);
+  private readonly today = inject(SEASONAL_DATE);
   private nextId = 0;
 
   /** Onde ficam os enfeites; ver SeasonalPlacement. */
@@ -75,7 +73,7 @@ export class Natal {
 
   constructor() {
     afterNextRender(() => {
-      if (isNatal()) {
+      if (isNatal(this.today())) {
         this.show();
       }
     });
