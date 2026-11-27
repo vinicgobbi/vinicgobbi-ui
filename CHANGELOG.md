@@ -1,3 +1,12 @@
+## v0.4.0 (2026-11-27)
+
+### Feat
+
+- **showcase**: usa a linha de ações e o grupo no menu lateral
+- **styles**: adiciona cabeçalho de seção centralizado
+- **seasonal**: permite levar a saudação para fora do balão
+- **sidebar**: adiciona linha de ações e grupo que abre como pasta
+
 ## v0.3.0 (2026-11-27)
 
 ### Feat
