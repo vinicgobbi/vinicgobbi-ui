@@ -62,14 +62,14 @@ O tema vem de `<html data-theme="light|dark">`, e as datas comemorativas, de `da
 
 Cada área é um entry point, importado só por quem usa:
 
-| Entry point               | O que tem                                                                       |
-| ------------------------- | ------------------------------------------------------------------------------- |
-| `@vinicgobbi/ui/theme`    | `ThemeService` (claro/escuro), `THEME_INIT_SCRIPT`                              |
-| `@vinicgobbi/ui/sidebar`  | `<vg-sidebar>`, `provideSidebar(nome)`, `SIDEBAR_INIT_SCRIPT`                   |
-| `@vinicgobbi/ui/tooltip`  | diretiva `vgTooltip`                                                            |
-| `@vinicgobbi/ui/seasonal` | `<vg-seasonal>` (todas as datas comemorativas), `provideSeasonalDate`           |
-| `@vinicgobbi/ui/consent`  | `<vg-cookie-banner>`, `AnalyticsService`, `provideAnalytics({ measurementId })` |
-| `@vinicgobbi/ui/a11y`     | `<vg-vlibras>`, diretiva `vgRevealOnScroll`                                     |
+| Entry point               | O que tem                                                                                 |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| `@vinicgobbi/ui/theme`    | `ThemeService` (claro/escuro), `THEME_INIT_SCRIPT`                                        |
+| `@vinicgobbi/ui/sidebar`  | `<vg-sidebar>`, `<vg-sidebar-group>`, `provideSidebar(nome)`, `SIDEBAR_INIT_SCRIPT`       |
+| `@vinicgobbi/ui/tooltip`  | diretiva `vgTooltip`                                                                      |
+| `@vinicgobbi/ui/seasonal` | `<vg-seasonal>` (todas as datas comemorativas), `SeasonalGreeting`, `provideSeasonalDate` |
+| `@vinicgobbi/ui/consent`  | `<vg-cookie-banner>`, `AnalyticsService`, `provideAnalytics({ measurementId })`           |
+| `@vinicgobbi/ui/a11y`     | `<vg-vlibras>`, diretiva `vgRevealOnScroll`                                               |
 
 Tudo funciona com zone.js ou zoneless, e com SSR ou prerender: o que depende do navegador só roda depois da primeira renderização.
 
@@ -111,11 +111,13 @@ O input `placement` (de `<vg-seasonal>`, `<vg-natal>` e `<vg-halloween>`) escolh
 | `--seasonal-hanging-display`             | `block`     | `none` esconde enfeites e aranha quando a margem livre do layout for estreita demais                    |
 | `--seasonal-z` / `--seasonal-greeting-z` | `40` / `55` | Camadas da decoração e da saudação (o aviso de cookies fica em 60)                                      |
 
+A saudação aparece num balão no canto inferior esquerdo. Para mostrá-la em outro lugar (ex.: no placeholder de uma busca), use `<vg-seasonal greeting="none" />` e leia o `SeasonalGreeting`: `occasion()` e `text()` (mensagem, emoji e ação do botão) ficam `null` fora das datas, e `release({ x, y })` solta a revoada a partir de um ponto da tela.
+
 ### Menu lateral
 
 ```ts
 @Component({
-  imports: [Sidebar, Tooltip],
+  imports: [Sidebar, SidebarGroup, Tooltip],
   providers: [provideSidebar('admin')],
   host: { class: 'layout--sidebar' },
   template: `
@@ -124,6 +126,16 @@ O input `placement` (de `<vg-seasonal>`, `<vg-natal>` e `<vg-halloween>`) escolh
         <span class="brand__mark" aria-hidden="true">VG</span>
         <span class="brand__name">Admin</span>
       </a>
+      <button
+        sidebarActions
+        type="button"
+        class="sidebar-action"
+        aria-label="Trocar tema"
+        vgTooltip="Trocar tema"
+        (click)="theme.toggle()"
+      >
+        <i class="bi bi-moon-stars" aria-hidden="true"></i>
+      </button>
       <nav aria-label="Principal">
         <ul class="sidebar-links">
           <li>
@@ -138,9 +150,22 @@ O input `placement` (de `<vg-seasonal>`, `<vg-natal>` e `<vg-halloween>`) escolh
               <span class="sidebar-link__label">Posts</span>
             </a>
           </li>
+          <li>
+            <vg-sidebar-group label="Categorias" icon="folder2" [active]="naCategoria()">
+              <ul class="sidebar-sublinks">
+                <li>
+                  <a class="sidebar-link sidebar-link--sub" routerLink="/categorias/angular">
+                    <i class="bi bi-folder" aria-hidden="true"></i>
+                    <span class="sidebar-link__label">Angular</span>
+                    <span class="sidebar-link__count">3</span>
+                  </a>
+                </li>
+              </ul>
+            </vg-sidebar-group>
+          </li>
         </ul>
       </nav>
-      <ng-container sidebarFooter><!-- tema, sair... --></ng-container>
+      <ng-container sidebarFooter><!-- opcional: usuário, sair... --></ng-container>
     </vg-sidebar>
     <div class="layout__content"><main id="conteudo">...</main></div>
   `,
@@ -151,6 +176,10 @@ export class AdminLayout {
 ```
 
 Cada nome guarda o próprio estado recolhido (`localStorage`: `sidebar.<nome>`).
+
+- `[sidebarActions]`: botões só com ícone numa linha abaixo da marca. O de recolher fica sempre no fim dela e, com o menu recolhido, vai para o topo da pilha.
+- `<vg-sidebar-group>`: abre e fecha como pasta. Abre sozinho quando `active` fica true; com o menu recolhido, o clique expande o menu e abre o grupo.
+- `[sidebarFooter]`: opcional; some quando está vazio.
 
 ## Instalando num app
 
