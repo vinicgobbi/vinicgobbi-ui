@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  computed,
   inject,
   viewChild,
 } from '@angular/core';
@@ -13,8 +14,12 @@ import { SidebarState } from './sidebar-state';
 /**
  * Casca de menu lateral: coluna fixa em telas largas, que pode ser recolhida para mostrar só os
  * ícones, e gaveta aberta pela barra do topo em telas estreitas. O conteúdo entra por projeção:
- * `[sidebarBrand]` (ex.: a .brand), a navegação e `[sidebarFooter]`. Os itens usam as classes
- * .sidebar-links, .sidebar-link, .sidebar-link__label e .sidebar-section de styles/sidebar.css.
+ * - `[sidebarBrand]` (ex.: a .brand);
+ * - `[sidebarActions]`: botões só com ícone (.sidebar-action, com aria-label e vgTooltip), numa
+ *   linha logo abaixo da marca. O botão de recolher fica sempre no fim dela;
+ * - a navegação, com .sidebar-links, .sidebar-link, .sidebar-link__label, .sidebar-section e
+ *   <vg-sidebar-group> (ver styles/sidebar.css);
+ * - `[sidebarFooter]`, opcional: itens .sidebar-link no pé do menu.
  *
  * Requer provideSidebar(nome) no componente pai. Com Router, fecha a gaveta a cada navegação.
  */
@@ -32,6 +37,10 @@ export class Sidebar {
   protected readonly state = inject(SidebarState);
   /** Único por menu, para dois menus na mesma página não repetirem o id. */
   protected readonly panelId = `menu-lateral-${this.state.name}`;
+
+  protected readonly collapseLabel = computed(() =>
+    this.state.collapsed() ? 'Expandir menu' : 'Recolher menu',
+  );
 
   private readonly menuToggle = viewChild<ElementRef<HTMLButtonElement>>('menuToggle');
 

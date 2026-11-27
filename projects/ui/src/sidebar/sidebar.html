@@ -26,26 +26,27 @@
   </div>
 
   <div [id]="panelId" class="sidebar__panel" [class.sidebar__panel--open]="state.menuOpen()">
+    <div class="sidebar__actions">
+      <ng-content select="[sidebarActions]" />
+
+      <button
+        type="button"
+        class="sidebar-action sidebar__collapse"
+        [attr.aria-expanded]="!state.collapsed()"
+        [attr.aria-label]="collapseLabel()"
+        [vgTooltip]="collapseLabel()"
+        (click)="state.toggleCollapsed()"
+      >
+        <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
+      </button>
+    </div>
+
     <div class="sidebar__nav">
       <ng-content />
     </div>
 
     <div class="sidebar__footer">
       <ng-content select="[sidebarFooter]" />
-
-      <button
-        type="button"
-        class="sidebar-link sidebar__collapse"
-        [attr.aria-expanded]="!state.collapsed()"
-        [vgTooltip]="state.collapsed() ? 'Expandir menu' : 'Recolher menu'"
-        [vgTooltipDisabled]="!state.showTooltips()"
-        (click)="state.toggleCollapsed()"
-      >
-        <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
-        <span class="sidebar-link__label">{{
-          state.collapsed() ? 'Expandir menu' : 'Recolher menu'
-        }}</span>
-      </button>
     </div>
   </div>
 

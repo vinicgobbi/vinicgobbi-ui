@@ -17,6 +17,9 @@ class Page {}
         <span class="brand__mark" aria-hidden="true">VG</span>
         <span class="brand__name">Painel</span>
       </a>
+      <a sidebarActions class="sidebar-action acao" href="/feed" aria-label="Feed">
+        <i class="bi bi-rss" aria-hidden="true"></i>
+      </a>
       <nav aria-label="Principal">
         <ul class="sidebar-links">
           <li><a class="sidebar-link" href="/a">Item</a></li>
@@ -53,10 +56,11 @@ describe('Sidebar', () => {
     document.documentElement.removeAttribute('data-sidebar-painel');
   });
 
-  it('distribui marca, navegação e rodapé nas áreas do menu', async () => {
+  it('distribui marca, ações, navegação e rodapé nas áreas do menu', async () => {
     const { element } = await render();
 
     expect(element.querySelector('.sidebar__head .brand')).not.toBeNull();
+    expect(element.querySelector('.sidebar__actions .acao')).not.toBeNull();
     expect(element.querySelector('.sidebar__nav nav')).not.toBeNull();
     expect(element.querySelector('.sidebar__footer .rodape')).not.toBeNull();
   });
@@ -97,7 +101,17 @@ describe('Sidebar', () => {
     expect(document.activeElement).toBe(toggle);
   });
 
-  it('recolhe e expande pelo botão do rodapé, marcando o menu e salvando a escolha', async () => {
+  it('põe o botão de recolher no fim da linha de ações, depois das do app', async () => {
+    const { element } = await render();
+    const actions = [...element.querySelector('.sidebar__actions')!.children];
+
+    expect(actions.map((action) => action.classList.contains('sidebar__collapse'))).toEqual([
+      false,
+      true,
+    ]);
+  });
+
+  it('recolhe e expande pelo botão de ícone, marcando o menu e salvando a escolha', async () => {
     const { fixture, element } = await render();
     const collapse = element.querySelector<HTMLButtonElement>('.sidebar__collapse')!;
 
@@ -106,14 +120,24 @@ describe('Sidebar', () => {
 
     expect(element.querySelector('.sidebar')?.hasAttribute('data-collapsed')).toBe(true);
     expect(collapse.getAttribute('aria-expanded')).toBe('false');
-    expect(collapse.textContent).toContain('Expandir menu');
+    expect(collapse.getAttribute('aria-label')).toBe('Expandir menu');
     expect(localStorage.getItem('sidebar.painel')).toBe('collapsed');
 
     collapse.click();
     await fixture.whenStable();
 
     expect(element.querySelector('.sidebar')?.hasAttribute('data-collapsed')).toBe(false);
-    expect(collapse.textContent).toContain('Recolher menu');
+    expect(collapse.getAttribute('aria-label')).toBe('Recolher menu');
+  });
+
+  it('mostra o nome do botão de recolher como dica, mesmo com o menu expandido', async () => {
+    const { element } = await render();
+    const collapse = element.querySelector<HTMLButtonElement>('.sidebar__collapse')!;
+
+    collapse.dispatchEvent(new FocusEvent('focusin'));
+
+    expect(document.querySelector('.tooltip')?.textContent).toBe('Recolher menu');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
   });
 
   it('já renderiza recolhido quando a escolha salva é essa', async () => {

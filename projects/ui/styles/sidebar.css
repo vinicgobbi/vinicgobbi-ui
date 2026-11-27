@@ -74,11 +74,49 @@
   min-height: 0;
 }
 
+/* Linha de botões só com ícone abaixo da marca; o de recolher fica no fim, à direita. */
+.sidebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 0.75rem;
+  padding: 0 0 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-action {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.sidebar-action:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.sidebar__collapse {
+  margin-left: auto;
+}
+
 /* Com muitos itens, só a lista rola; marca e rodapé do menu ficam no lugar. */
 .sidebar__nav {
   flex: 1;
   min-height: 0;
-  padding: 0.25rem 0.75rem 1rem;
+  padding: 0.75rem 0.75rem 1rem;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -90,6 +128,10 @@
   gap: 0.15rem;
   padding: 0.75rem;
   border-top: 1px solid var(--border);
+}
+
+.sidebar__footer:empty {
+  display: none;
 }
 
 /* ---------- Itens ---------- */
@@ -180,6 +222,75 @@
   transition: transform 0.2s ease;
 }
 
+/* ---------- Grupo que abre como pasta (<vg-sidebar-group>) ---------- */
+.sidebar-group {
+  display: block;
+}
+
+.sidebar-group__toggle--active {
+  color: var(--accent-text);
+}
+
+.sidebar-group__chevron {
+  margin-left: auto;
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-group[data-expanded] .sidebar-group__chevron {
+  transform: rotate(180deg);
+}
+
+/* Abre e fecha deslizando: a linha da grade vai de 0 à altura do conteúdo. */
+.sidebar-group__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.sidebar-group[data-expanded] .sidebar-group__panel {
+  grid-template-rows: 1fr;
+}
+
+.sidebar-group__inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Sub-itens recuados, com uma guia vertical ligando-os ao grupo, como pastas. */
+.sidebar-sublinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0.15rem 0 0.35rem 1.25rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border);
+  list-style: none;
+}
+
+.sidebar-link--sub {
+  padding-block: 0.35rem;
+  font-size: 0.86rem;
+}
+
+/* Contagem discreta à direita (ex.: posts da categoria). */
+.sidebar-link__count {
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-link.active .sidebar-link__count {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-group__panel,
+  .sidebar-group__chevron {
+    transition: none;
+  }
+}
+
 .sidebar__backdrop {
   display: none;
 }
@@ -201,6 +312,26 @@
 
   .sidebar[data-collapsed] .sidebar__nav {
     padding-inline: 0.75rem;
+  }
+
+  /* Os ícones se empilham, com o de expandir no topo, logo abaixo da marca. */
+  .sidebar[data-collapsed] .sidebar__actions {
+    flex-direction: column;
+  }
+
+  .sidebar[data-collapsed] .sidebar__collapse {
+    order: -1;
+    margin-left: 0;
+  }
+
+  /* Recolhido, o grupo é só o ícone: os sub-itens aparecem ao expandir o menu. */
+  .sidebar[data-collapsed] .sidebar-group__chevron,
+  .sidebar[data-collapsed] .sidebar-group__panel {
+    display: none;
+  }
+
+  .sidebar[data-collapsed] .sidebar-group__toggle--active {
+    background: var(--accent-soft);
   }
 
   .sidebar[data-collapsed] .sidebar-link {
@@ -277,6 +408,14 @@
     display: none;
   }
 
+  .sidebar__actions {
+    padding-top: 0.75rem;
+  }
+
+  .sidebar__actions:not(:has(.sidebar-action:not(.sidebar__collapse))) {
+    display: none;
+  }
+
   .sidebar__panel {
     position: fixed;
     top: var(--nav-height);
@@ -297,10 +436,6 @@
   .sidebar__panel--open {
     transform: none;
     visibility: visible;
-  }
-
-  .sidebar__nav {
-    padding-top: 1rem;
   }
 
   .sidebar__backdrop {
