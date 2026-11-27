@@ -86,6 +86,18 @@ it('o index.html traz o script anti-flash do tema', () => {
 });
 ```
 
+### Datas comemorativas
+
+`<vg-natal />` fica ativo dezembro inteiro e `<vg-halloween />` no dia 31/10, no fuso de quem visita, sem opção de fechar. Fora da data não renderizam nada; com movimento reduzido, só o acento muda. Ao sair da tela, devolvem o acento normal.
+
+O input `placement` escolhe onde pendurar enfeites e aranha: `margins` (padrão, nas margens do container) ou `edges` (a 12% das laterais, para páginas estreitas). Ajustes no `:root` do app:
+
+| Variável                                 | Padrão      | Para quê                                                                                                |
+| ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------- |
+| `--seasonal-start`                       | `0px`       | Onde começa a área de conteúdo. Com menu lateral fixo, a largura dele, para nada ficar por cima do menu |
+| `--seasonal-hanging-display`             | `block`     | `none` esconde enfeites e aranha quando a margem livre do layout for estreita demais                    |
+| `--seasonal-z` / `--seasonal-greeting-z` | `40` / `55` | Camadas da decoração e da saudação (o aviso de cookies fica em 60)                                      |
+
 ### Menu lateral
 
 ```ts
