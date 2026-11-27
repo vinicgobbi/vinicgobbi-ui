@@ -51,6 +51,16 @@
   font-size: 1.05rem;
 }
 
+/* Cabeçalho centralizado (ex.: a vitrine de uma home); o conteúdo filho também se centraliza. */
+.section-header--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-header--center > * {
+  margin-inline: auto;
+}
+
 /* Cabeçalho de tela: título à esquerda, ação principal à direita. */
 .page-header {
   display: flex;
