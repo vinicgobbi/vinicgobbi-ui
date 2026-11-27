@@ -22,6 +22,9 @@
   --reading: 46rem;
   /* Altura da barra fixa no topo; compensa o scroll até âncoras. Use 0px sem barra fixa. */
   --nav-height: 68px;
+  /* Menu lateral (sidebar.css): largura normal e recolhida, só com os ícones. */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
 
   /* ---------- Cores: tema claro ---------- */
   color-scheme: light;

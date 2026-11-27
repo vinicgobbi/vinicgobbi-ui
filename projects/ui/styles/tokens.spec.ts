@@ -2,6 +2,7 @@ import base from './base.css' with { loader: 'text' };
 import components from './components.css' with { loader: 'text' };
 import index from './index.css' with { loader: 'text' };
 import layout from './layout.css' with { loader: 'text' };
+import sidebar from './sidebar.css' with { loader: 'text' };
 import tokens from './tokens.css' with { loader: 'text' };
 import { customProperties, parseBlocks, requiredVariables } from './testing/parse-css';
 
@@ -9,7 +10,7 @@ const blocks = parseBlocks(tokens);
 const DARK = ":root[data-theme='dark']";
 
 /** Tokens que não mudam com o tema: tipografia e medidas. */
-const THEME_INDEPENDENT = /^--(font-|radius|container$|reading$|nav-height$)/;
+const THEME_INDEPENDENT = /^--(font-|radius|container$|reading$|nav-height$|sidebar-)/;
 
 const lightThemeTokens = customProperties(blocks.get(':root')).filter(
   (name) => !THEME_INDEPENDENT.test(name),
@@ -53,7 +54,7 @@ describe('folhas de estilo', () => {
         customProperties(declarations),
       ),
     );
-    const used = [base, layout, components].flatMap((css) => [...requiredVariables(css)]);
+    const used = [base, layout, components, sidebar].flatMap((css) => [...requiredVariables(css)]);
 
     expect(used.filter((name) => !defined.has(name))).toEqual([]);
   });

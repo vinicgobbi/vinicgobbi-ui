@@ -1,0 +1,313 @@
+/*
+ * Menu lateral (componente <vg-sidebar> de @vinicgobbi/ui/sidebar). Opcional: não entra no
+ * index.css; importe depois dele. Os estilos são globais porque quase todo o conteúdo do menu
+ * entra por projeção.
+ *
+ * - Telas largas (>= 960px): coluna fixa, que pode ser recolhida para só os ícones
+ *   (.sidebar[data-collapsed]).
+ * - Telas estreitas: barra no topo, e o menu abre como gaveta pela esquerda.
+ *
+ * 960px é o mesmo valor de SIDEBAR_WIDE_QUERY; media queries não aceitam variáveis.
+ */
+
+/* ---------- Página com menu lateral ---------- */
+.layout--sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.layout__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 960px) {
+  .layout--sidebar {
+    flex-direction: row;
+  }
+
+  /* Sem barra fixa no topo para compensar no scroll até âncoras. */
+  :root:has(.layout--sidebar) {
+    --nav-height: 0px;
+  }
+}
+
+/* ---------- Coluna ---------- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  height: 100dvh;
+  border-right: 1px solid var(--border);
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: width 0.2s ease;
+}
+
+.sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+/* .sidebar na frente: precisa vencer o display de .btn. */
+.sidebar .sidebar__toggle {
+  display: none;
+}
+
+.sidebar__panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Com muitos itens, só a lista rola; marca e rodapé do menu ficam no lugar. */
+.sidebar__nav {
+  flex: 1;
+  min-height: 0;
+  padding: 0.25rem 0.75rem 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sidebar__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Itens ---------- */
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  list-style: none;
+}
+
+.sidebar-section {
+  margin: 1.25rem 0.75rem 0.4rem;
+  color: var(--text-subtle);
+  font: 600 0.72rem var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  font: 500 0.92rem var(--font-sans);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.sidebar-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.sidebar-link .bi {
+  flex-shrink: 0;
+  width: 1rem;
+  text-align: center;
+}
+
+/* Item que só informa (ex.: usuário logado), sem ação. */
+.sidebar-link--static {
+  cursor: default;
+}
+
+.sidebar-link--static:hover {
+  background: none;
+  color: var(--text-muted);
+}
+
+.sidebar-link__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-link__badge {
+  min-width: 1.3rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--danger);
+  color: var(--bg);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3rem;
+  text-align: center;
+}
+
+.sidebar__collapse .bi {
+  transition: transform 0.2s ease;
+}
+
+.sidebar__backdrop {
+  display: none;
+}
+
+/* ---------- Recolhido (só ícones), em telas largas ---------- */
+@media (min-width: 960px) {
+  .sidebar[data-collapsed] {
+    width: var(--sidebar-collapsed-width);
+  }
+
+  .sidebar[data-collapsed] .sidebar__head {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .sidebar[data-collapsed] .brand__name {
+    display: none;
+  }
+
+  .sidebar[data-collapsed] .sidebar__nav {
+    padding-inline: 0.75rem;
+  }
+
+  .sidebar[data-collapsed] .sidebar-link {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  /* O rótulo some da tela mas continua sendo o nome acessível do link. */
+  .sidebar[data-collapsed] .sidebar-link__label,
+  .sidebar[data-collapsed] .sidebar-section {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* No lugar do título da seção, um separador. */
+  .sidebar[data-collapsed] .sidebar-section + .sidebar-links {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* O contador vira um ponto sobre o ícone. */
+  .sidebar[data-collapsed] .sidebar-link__badge {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.65rem;
+    width: 0.6rem;
+    min-width: 0;
+    height: 0.6rem;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid var(--bg);
+    color: transparent;
+    line-height: 0;
+  }
+
+  .sidebar[data-collapsed] .sidebar__collapse .bi {
+    transform: rotate(180deg);
+  }
+}
+
+/* ---------- Celular e tablet: barra no topo e gaveta ---------- */
+@media (max-width: 959.98px) {
+  .sidebar {
+    width: auto;
+    height: auto;
+    border-right: 0;
+    /* Sem filtro aqui: ele faria a gaveta (position: fixed) se posicionar dentro da barra. */
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .sidebar__head {
+    height: var(--nav-height);
+    padding-block: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .sidebar .sidebar__toggle {
+    display: inline-flex;
+  }
+
+  /* Recolher só faz sentido na coluna das telas largas. */
+  .sidebar__collapse {
+    display: none;
+  }
+
+  .sidebar__panel {
+    position: fixed;
+    top: var(--nav-height);
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    width: min(300px, 85vw);
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-hover);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.2s ease,
+      visibility 0.2s;
+  }
+
+  .sidebar__panel--open {
+    transform: none;
+    visibility: visible;
+  }
+
+  .sidebar__nav {
+    padding-top: 1rem;
+  }
+
+  .sidebar__backdrop {
+    display: block;
+    position: fixed;
+    inset: var(--nav-height) 0 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.4);
+  }
+}

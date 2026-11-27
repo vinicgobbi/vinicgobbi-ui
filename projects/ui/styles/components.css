@@ -323,6 +323,36 @@ a.chip:hover {
   }
 }
 
+/* ---------- Marca: quadrado com as iniciais e o nome ---------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  color: var(--text);
+  font: 700 1rem var(--font-display);
+  text-decoration: none;
+}
+
+.brand__mark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.brand__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ---------- Dica (diretiva vgTooltip de @vinicgobbi/ui/tooltip) ---------- */
 .tooltip {
   position: fixed;

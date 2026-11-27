@@ -20,13 +20,17 @@
   },
   "peerDependencies": {
     "@angular/common": "^22.2.0",
-    "@angular/core": "^22.2.0"
+    "@angular/core": "^22.2.0",
+    "@angular/router": "^22.2.0"
   },
   "peerDependenciesMeta": {
     "@angular/common": {
       "optional": true
     },
     "@angular/core": {
+      "optional": true
+    },
+    "@angular/router": {
       "optional": true
     }
   },
@@ -42,6 +46,7 @@
     ".": "./src/public-api.ts",
     "./theme": "./src/theme/public-api.ts",
     "./tooltip": "./src/tooltip/public-api.ts",
+    "./sidebar": "./src/sidebar/public-api.ts",
     "./styles/*.css": "./styles/*.css"
   }
 }
