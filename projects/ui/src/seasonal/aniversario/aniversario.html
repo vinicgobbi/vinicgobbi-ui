@@ -20,21 +20,26 @@
         [style.--spin]="item.spin"
         [style.font-size.px]="item.size"
         [style.animation-delay.ms]="item.delay"
+        [style.left.px]="item.x"
+        [style.top.px]="item.y"
+        [style.bottom]="item.y === undefined ? null : 'auto'"
         >{{ item.icon }}</span
       >
     }
   </div>
 
-  <div class="greeting" role="status">
-    <button
-      type="button"
-      class="greeting__action"
-      (click)="release()"
-      aria-label="Soltar balões"
-      title="Soltar balões"
-    >
-      🎂
-    </button>
-    <p>Hoje é meu aniversário!</p>
-  </div>
+  @if (greeting() === 'floating') {
+    <div class="greeting" role="status">
+      <button
+        type="button"
+        class="greeting__action"
+        (click)="release()"
+        [attr.aria-label]="text.action"
+        [title]="text.action"
+      >
+        {{ text.icon }}
+      </button>
+      <p>{{ text.message }}</p>
+    </div>
+  }
 }

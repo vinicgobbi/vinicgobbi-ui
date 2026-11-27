@@ -10,8 +10,15 @@ import {
   signal,
 } from '@angular/core';
 import { isHalloween } from '../calendar';
+import {
+  BurstOrigin,
+  SEASONAL_GREETINGS,
+  SeasonalGreeting,
+  SeasonalGreetingMode,
+} from '../greeting';
 import { SeasonalPlacement } from '../placement';
 import { SEASONAL_DATE } from '../seasonal-date';
+import { random, registerGreeting } from '../shared/seasonal-decoration';
 
 interface SwarmBat {
   id: number;
@@ -19,6 +26,8 @@ interface SwarmBat {
   dy: string;
   size: number;
   delay: number;
+  x?: number;
+  y?: number;
 }
 
 const SWARM_SIZE = 14;
@@ -44,6 +53,10 @@ export class Halloween {
 
   /** Onde fica a aranha; ver SeasonalPlacement. */
   readonly placement = input<SeasonalPlacement>('margins');
+  /** Onde fica a saudação; ver SeasonalGreetingMode. */
+  readonly greeting = input<SeasonalGreetingMode>('floating');
+
+  protected readonly text = SEASONAL_GREETINGS.halloween;
 
   protected readonly active = signal(false);
   protected readonly bats = [1, 2, 3, 4];
@@ -55,26 +68,31 @@ export class Halloween {
     'C-22 0 -16 0 -13 5 C-10 1 -6 1 -3 4 Z';
 
   constructor() {
+    const destroyRef = inject(DestroyRef);
+    const greeting = inject(SeasonalGreeting);
+
     afterNextRender(() => {
       if (!isHalloween(this.today())) {
         return;
       }
       this.active.set(true);
       this.document.documentElement.setAttribute('data-halloween', '');
+      registerGreeting('halloween', (origin) => this.release(origin), destroyRef, greeting);
     });
     // Ao sair da tela (ex.: uma área do app sem decoração), o acento volta ao normal.
-    inject(DestroyRef).onDestroy(() =>
-      this.document.documentElement.removeAttribute('data-halloween'),
-    );
+    destroyRef.onDestroy(() => this.document.documentElement.removeAttribute('data-halloween'));
   }
 
-  protected release(): void {
-    const novos = Array.from({ length: SWARM_SIZE }, () => ({
+  protected release(origin?: BurstOrigin): void {
+    const novos: SwarmBat[] = Array.from({ length: SWARM_SIZE }, () => ({
       id: this.nextId++,
-      dx: `${Math.round(Math.random() * 90 - 5)}vw`,
-      dy: `${-Math.round(30 + Math.random() * 60)}vh`,
-      size: Math.round(24 + Math.random() * 28),
-      delay: Math.round(Math.random() * 400),
+      // Do balão, a revoada sobe para a direita; de outro ponto, se espalha em volta dele.
+      dx: `${Math.round(origin ? random(-40, 40) : random(-5, 85))}vw`,
+      dy: `${Math.round(origin ? random(-25, 60) : -random(30, 90))}vh`,
+      size: Math.round(random(24, 52)),
+      delay: Math.round(random(0, 400)),
+      x: origin?.x,
+      y: origin?.y,
     }));
     this.swarm.update((atual) => [...atual, ...novos]);
     setTimeout(() => {

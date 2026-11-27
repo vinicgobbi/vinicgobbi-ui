@@ -28,6 +28,7 @@ const COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#a855f7', '#ec4899'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Aniversario extends SeasonalDecoration {
+  protected readonly occasion = 'aniversario' as const;
   protected readonly attribute = 'data-aniversario';
   protected readonly burstIcons = ['🎈', '🎉', '🎁', '✨', '🎂'];
   protected readonly balloons = signal<Balloon[]>([]);

@@ -38,6 +38,7 @@ const COLORS = ['#ec4899', '#a855f7', '#facc15', '#22c55e', '#3b82f6', '#f97316'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Carnaval extends SeasonalDecoration {
+  protected readonly occasion = 'carnaval' as const;
   protected readonly attribute = 'data-carnaval';
   protected readonly burstIcons = ['🎉', '🎊', '🎭', '✨', '🥁'];
   protected readonly confetti = signal<Confetto[]>([]);

@@ -12,6 +12,13 @@ export {
   type SeasonalOccasion,
 } from './calendar';
 export { Carnaval } from './carnaval/carnaval';
+export {
+  SEASONAL_GREETINGS,
+  SeasonalGreeting,
+  type BurstOrigin,
+  type SeasonalGreetingMode,
+  type SeasonalGreetingText,
+} from './greeting';
 export { Halloween } from './halloween/halloween';
 export { Natal } from './natal/natal';
 export { Pascoa } from './pascoa/pascoa';
