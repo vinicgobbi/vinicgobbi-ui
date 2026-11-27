@@ -67,7 +67,7 @@ Cada área é um entry point, importado só por quem usa:
 | `@vinicgobbi/ui/theme`    | `ThemeService` (claro/escuro), `THEME_INIT_SCRIPT`                              |
 | `@vinicgobbi/ui/sidebar`  | `<vg-sidebar>`, `provideSidebar(nome)`, `SIDEBAR_INIT_SCRIPT`                   |
 | `@vinicgobbi/ui/tooltip`  | diretiva `vgTooltip`                                                            |
-| `@vinicgobbi/ui/seasonal` | `<vg-natal>` (dezembro), `<vg-halloween>` (31/10)                               |
+| `@vinicgobbi/ui/seasonal` | `<vg-seasonal>` (todas as datas comemorativas), `provideSeasonalDate`           |
 | `@vinicgobbi/ui/consent`  | `<vg-cookie-banner>`, `AnalyticsService`, `provideAnalytics({ measurementId })` |
 | `@vinicgobbi/ui/a11y`     | `<vg-vlibras>`, diretiva `vgRevealOnScroll`                                     |
 
@@ -88,9 +88,22 @@ it('o index.html traz o script anti-flash do tema', () => {
 
 ### Datas comemorativas
 
-`<vg-natal />` fica ativo dezembro inteiro e `<vg-halloween />` no dia 31/10, no fuso de quem visita, sem opção de fechar. Fora da data não renderizam nada; com movimento reduzido, só o acento muda. Ao sair da tela, devolvem o acento normal.
+`<vg-seasonal />` reúne todas as ocasiões num elemento só. Cada uma aparece só na sua data, no fuso de quem visita, e fica ativa o período inteiro, sem opção de fechar:
 
-O input `placement` escolhe onde pendurar enfeites e aranha: `margins` (padrão, nas margens do container) ou `edges` (a 12% das laterais, para páginas estreitas). Ajustes no `:root` do app:
+| Ocasião     | Período                      | Acento            | Cena                   |
+| ----------- | ---------------------------- | ----------------- | ---------------------- |
+| Ano Novo    | 26/12 a 01/01                | dourado           | fogos de artifício     |
+| Carnaval    | sábado a terça de Carnaval   | magenta           | confete e serpentinas  |
+| Páscoa      | Sexta-feira Santa ao domingo | lilás             | ovinhos e coelho       |
+| Aniversário | 01/10                        | o normal da marca | balões                 |
+| Halloween   | 31/10                        | laranja           | morcegos e aranha      |
+| Natal       | 01/12 a 25/12                | vermelho          | neve, trenó e enfeites |
+
+Carnaval e Páscoa mudam a cada ano e são calculados a partir do domingo de Páscoa (`easterSunday`). Fora das datas nada é renderizado; com movimento reduzido, só o acento e a saudação aparecem. Ao sair da tela, a decoração devolve o acento normal. Cada ocasião também existe como componente próprio (`<vg-natal />`, `<vg-carnaval />`...).
+
+Para ver uma ocasião fora da data (numa vitrine ou num teste), troque o relógio: `provideSeasonalDate(() => new Date(2026, 11, 31))`.
+
+O input `placement` (de `<vg-seasonal>`, `<vg-natal>` e `<vg-halloween>`) escolhe onde pendurar os enfeites de Natal e a aranha de Halloween: `margins` (padrão, nas margens do container) ou `edges` (a 12% das laterais, para páginas estreitas). Ajustes no `:root` do app:
 
 | Variável                                 | Padrão      | Para quê                                                                                                |
 | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------- |
